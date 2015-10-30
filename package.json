@@ -9,6 +9,7 @@
   "author": "Nuno Maurício, Sérgio Silva",
   "license": "ISC",
   "dependencies": {
+    "tsd": "^0.6.5",
     "typescript": "^1.6.2"
   }
 }
