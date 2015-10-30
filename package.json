@@ -1,0 +1,11 @@
+{
+  "name": "ts2lang",
+  "version": "1.0.0",
+  "description": "TypeScript to (language) bindings generator",
+  "main": "ts2lang.js",
+  "scripts": {
+    "test": "test"
+  },
+  "author": "Nuno Maurício, Sérgio Silva",
+  "license": "ISC"
+}
