@@ -21,7 +21,18 @@
         "!node_modules/**"
     ],
     "files": [
+        "src/ts-analyser.ts",
         "src/ts2lang.ts",
+        "src/Units/AbstractTsUnit.ts",
+        "src/Units/ITsUnit.ts",
+        "src/Units/TsAnnotation.ts",
+        "src/Units/TsClass.ts",
+        "src/Units/TsEnumerate.ts",
+        "src/Units/TsFunction.ts",
+        "src/Units/TsImport.ts",
+        "src/Units/TsInterface.ts",
+        "src/Units/TsModule.ts",
+        "src/Units/TsVariable.ts",
         "typings/tsd.d.ts",
         "typings/typescript/typescript.d.ts"
     ]
