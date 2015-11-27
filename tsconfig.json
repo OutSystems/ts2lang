@@ -23,6 +23,12 @@
     "files": [
         "src/ts-analyser.ts",
         "src/ts2lang.ts",
+        "src/Types/ITsType.ts",
+        "src/Types/TsAnyType.ts",
+        "src/Types/TsArrayType.ts",
+        "src/Types/TsBasicType.ts",
+        "src/Types/TsFunctionType.ts",
+        "src/Types/TsIdentifierType.ts",
         "src/Units/AbstractTsUnit.ts",
         "src/Units/ITsUnit.ts",
         "src/Units/TsAnnotation.ts",
@@ -32,8 +38,9 @@
         "src/Units/TsImport.ts",
         "src/Units/TsInterface.ts",
         "src/Units/TsModule.ts",
-        "src/Units/TsVariable.ts",
-        "typings/tsd.d.ts",
-        "typings/typescript/typescript.d.ts"
-    ]
+        "src/Units/TsVariable.ts"
+    ],
+    "atom": {
+        "rewriteTsconfig": true
+    }
 }
