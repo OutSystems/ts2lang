@@ -1,6 +1,6 @@
 #! /usr/bin/env node
 
-/// <reference path="typings/node/node.d.ts" />
+/// <reference path="../typings/node/node.d.ts" />
 
 import * as ts from "typescript"
 import * as analyser from "./ts-analyser";

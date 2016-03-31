@@ -1,5 +1,9 @@
+
 import * as ts from "typescript";
 
+
+// @ts2lang: xeue
+class Test {}
 let elements = {};
 function addElement(node: ts.Node, text: string){
     if(!elements[node.kind]) {
@@ -9,7 +13,17 @@ function addElement(node: ts.Node, text: string){
     elements[node.kind].push(text);
 }
 
-function analyseNode(node: ts.Node) {
+function getCommentsOf(node: ts.Node, sourceText: string) {
+    let comments = ts.getLeadingCommentRanges(sourceText, node.pos);
+    if(comments) {
+        console.log("Comments of: " + node.getText())
+        for (let comment of comments) {
+            console.log(sourceText.substring(comment.pos, comment.end));            
+        }
+    }
+}
+
+function analyseNode(node: ts.Node, sourceText: string) {
     switch (node.kind) {
         case ts.SyntaxKind.ModuleDeclaration:
             let moduleDeclaration = <ts.ModuleDeclaration> node;
@@ -23,6 +37,7 @@ function analyseNode(node: ts.Node) {
 
         case ts.SyntaxKind.ClassDeclaration:
             let classDeclaration = <ts.ClassDeclaration> node;
+            getCommentsOf(node, sourceText);
             addElement(node, classDeclaration.name.text);
             break;
 
@@ -37,13 +52,19 @@ function analyseNode(node: ts.Node) {
             let functionDeclaration = <ts.Declaration> node;
             addElement(node, functionDeclaration.name.getText());
             break;
+			
+		case ts.SyntaxKind.SingleLineCommentTrivia:
+			// I am next to nice log!
+			console.log("nice!");
+			break;
     }
 
-    ts.forEachChild(node, (child) => analyseNode(child));
+    ts.forEachChild(node, (child) => analyseNode(child, sourceText));
 }
 
 export function collectInformation(program: ts.Program, sourceFile: ts.SourceFile) {
-    analyseNode(sourceFile);
+    let scanner = ts.createScanner(ts.ScriptTarget.Latest, false, ts.LanguageVariant.Standard, sourceFile.text);
+    analyseNode(sourceFile, sourceFile.text);
     console.log("End processing file: " + sourceFile.fileName);
 
     console.log("Obtained data:");
