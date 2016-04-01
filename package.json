@@ -10,6 +10,6 @@
   "license": "ISC",
   "dependencies": {
     "tsd": "^0.6.5",
-    "typescript": "^1.6.2"
+    "typescript": "^1.8.9"
   }
 }
