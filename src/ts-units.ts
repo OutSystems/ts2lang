@@ -4,6 +4,8 @@ export interface ITsUnit {
 
 }
 
+// This should not appear
+// @ts2lang this should appear
 export interface ITopLevelTsUnit extends ITsUnit {
     name: string;
     functions: TsFunction[];
