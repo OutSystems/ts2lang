@@ -8,8 +8,10 @@
   },
   "author": "Sérgio Silva",
   "license": "ISC",
+  "devDependencies": {
+    "tsd": "^0.6.5"
+  },
   "dependencies": {
-    "tsd": "^0.6.5",
     "typescript": "^1.8.9"
   }
 }
