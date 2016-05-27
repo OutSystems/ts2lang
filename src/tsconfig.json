@@ -13,6 +13,6 @@
         "noLib": false,
         "preserveConstEnums": true,
         "suppressImplicitAnyIndexErrors": true,
-        "outDir": "bin"
+        "outDir": "../bin"
     }
 }
