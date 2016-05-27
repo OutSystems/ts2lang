@@ -10,6 +10,7 @@ function main(args: string[]) {
     // allways have to receive an argument and it must be a path
     if (!(!!args && args.length !== 0)) {
         console.log("No parameters were passed!");
+        process.exit(1);
     }
 
     const compilerOptions: ts.CompilerOptions = {
