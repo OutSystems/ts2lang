@@ -1,13 +1,11 @@
-#! /usr/bin/env node
-
 /// <reference path="../typings/node/node.d.ts" />
 
-import * as ts from "typescript"
+import * as ts from "typescript";
 import * as analyser from "./ts-analyser";
 
 function main(args: string[]) {
     // allways have to receive an argument and it must be a path
-    if (!(!!args && args.length != 0)) {
+    if (!(!!args && args.length !== 0)) {
         console.log("No parameters were passed!");
     }
 

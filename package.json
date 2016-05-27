@@ -6,7 +6,7 @@
   "scripts": {
     "test": "test"
   },
-  "author": "Nuno Maurício, Sérgio Silva",
+  "author": "Sérgio Silva",
   "license": "ISC",
   "dependencies": {
     "tsd": "^0.6.5",

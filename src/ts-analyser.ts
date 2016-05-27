@@ -1,22 +1,13 @@
-
 import * as ts from "typescript";
 import * as units from "./ts-units";
-
-let elements = {};
-function addElement(node: ts.Node, text: string){
-    if(!elements[node.kind]) {
-        elements[node.kind] = [];
-    }
-
-    elements[node.kind].push(text);
-}
+import * as types from "./ts-types";
 
 function getCommentsOf(node: ts.Node, sourceText: string) {
     let comments = ts.getLeadingCommentRanges(sourceText, node.pos);
-    if(comments) {
-        console.log("Comments of: " + node.getText())
+    if (comments) {
+        console.log("Comments of: " + node.getText());
         for (let comment of comments) {
-            console.log(sourceText.substring(comment.pos, comment.end));            
+            console.log(sourceText.substring(comment.pos, comment.end));
         }
     }
 }
@@ -25,16 +16,16 @@ let modules: units.TsModule[] = [];
 
 function visitNode(node: ts.Node, sourceText: string, parentUnit: units.ITopLevelTsUnit) {
     let shouldContinue = true;
-    
+
     switch (node.kind) {
         case ts.SyntaxKind.SourceFile:
             let sourceFile = <ts.SourceFile> node;
-            
-            if(sourceFile.fileName.indexOf("lib.d.ts") < 0) {
-                walkChildren(node, sourceText, parentUnit);   
+
+            if (sourceFile.fileName.indexOf("lib.d.ts") < 0) {
+                walkChildren(node, sourceText, parentUnit);
             }
             break;
-            
+
         case ts.SyntaxKind.ModuleDeclaration:
             let moduleDeclaration = <ts.ModuleDeclaration> node;
             let moduleDef = new units.TsModule(moduleDeclaration.name.text);
@@ -43,15 +34,15 @@ function visitNode(node: ts.Node, sourceText: string, parentUnit: units.ITopLeve
             // console.log("Visiting children of " + moduleDef.Name);
             walkChildren(node, sourceText, moduleDef);
             break;
-        
+
         case ts.SyntaxKind.ModuleBlock:
             walkChildren(node, sourceText, parentUnit);
             break;
-            
+
         case ts.SyntaxKind.ClassDeclaration:
             let classDeclaration = <ts.ClassDeclaration> node;
             let classDef = new units.TsClass(classDeclaration.name.text);
-            
+
             parentUnit.addClass(classDef);
             walkChildren(node, sourceText, classDef);
             break;
@@ -62,20 +53,31 @@ function visitNode(node: ts.Node, sourceText: string, parentUnit: units.ITopLeve
             parentUnit.addInterface(interfaceDefinition);
             walkChildren(node, sourceText, interfaceDefinition);
             break;
-            
+
         case ts.SyntaxKind.MethodDeclaration:
         case ts.SyntaxKind.FunctionDeclaration:
-            let functionDeclaration = <ts.Declaration> node;
-            let functionDef = new units.TsFunction(functionDeclaration.name.getText());
-            
+            let functionDeclaration = <ts.SignatureDeclaration> node;
+            // console.log(functionDeclaration.parameters);
+            let params = functionDeclaration.parameters.map(p => {
+                return new units.TsParameter(p.name.getText(), typeNodeToTsType(p.type));
+            });
+            let functionDef = new units.TsFunction(functionDeclaration.name.getText(), params, null);
             parentUnit.addFunction(functionDef);
             break;
     }
 }
 
+function typeNodeToTsType(tn: ts.TypeNode) {
+    switch(tn.kind) {
+        case ts.SyntaxKind.TypeReference:
+            let typeRef = <ts.TypeReferenceNode>tn;
+            return new types.TsIdentifierType(typeRef.typeName.getText());
+    }
+}
+
 function walkChildren(node: ts.Node, sourceText: string, parentUnit: units.ITopLevelTsUnit) {
     ts.forEachChild(node, (child) => {
-        visitNode(child, sourceText, parentUnit);   
+        visitNode(child, sourceText, parentUnit);
     });
 }
 
