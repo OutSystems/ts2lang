@@ -5,6 +5,7 @@ import * as analyser from "./ts-analyser";
 import * as Templates from "./template-runner";
 import { read as readConfiguration } from "./configuration";
 import { inspect } from "util";
+import { resolve as pathCombine } from "path";
 
 function main(args: string[]) {
     // allways have to receive an argument and it must be a path
@@ -51,7 +52,8 @@ function main(args: string[]) {
     sources.forEach(source => {
         let file = sourceFiles.filter(file => file.fileName === source)[0];
         console.log(
-            Templates.transform(analyser.collectInformation(program, file, file.fileName))
+            Templates.loadTemplate(pathCombine(process.cwd(), "bin/template-runner.js"))
+                .transform(analyser.collectInformation(program, file, file.fileName))
         );
     });
 }
