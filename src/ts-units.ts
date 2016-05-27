@@ -69,9 +69,15 @@ export class TsFunction implements ITsUnit {
     }
 }
 
-export class TsInterface extends TopLevelTsUnit { }
+export class TsInterface extends TopLevelTsUnit {
+    $interface: void; // block type compatibility with other top level unit types
+}
 
-export class TsModule extends TopLevelTsUnit { }
+export class TsModule extends TopLevelTsUnit {
+    $module: void; // block type compatibility with other top level unit types
+}
 
-export class TsClass extends TopLevelTsUnit { }
+export class TsClass extends TopLevelTsUnit {
+    $class: void; // block type compatibility with other top level unit types
+}
 

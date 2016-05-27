@@ -32,8 +32,9 @@ function main(args: string[]) {
         })
     );
     sourceFiles.forEach(file => {
-        analyser.collectInformation(program, file, file.fileName)
-            .classes.forEach(cls => Templates.parse(cls));
+        console.log(
+            Templates.transform(analyser.collectInformation(program, file, file.fileName))
+        );
     });
 }
 
