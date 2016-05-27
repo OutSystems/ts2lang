@@ -82,8 +82,9 @@ function walkChildren(node: ts.Node, sourceText: string, parentUnit: units.ITopL
 }
 
 
-export function collectInformation(program: ts.Program, sourceFile: ts.SourceFile) {
+export function collectInformation(program: ts.Program, sourceFile: ts.SourceFile, rootModuleName: string) {
     let scanner = ts.createScanner(ts.ScriptTarget.Latest, false, ts.LanguageVariant.Standard, sourceFile.text);
-    let moduleDef = new units.TsModule("__internal__");
+    let moduleDef = new units.TsModule(rootModuleName);
     visitNode(sourceFile, sourceFile.text, moduleDef);
+    return moduleDef;
 }

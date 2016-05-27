@@ -23,7 +23,13 @@ function main(args: string[]) {
     let sourceFiles = program.getSourceFiles();
 
     console.log("Processing: " + sourceFiles.length + " file(s).");
-    sourceFiles.map(sourceFile => analyser.collectInformation(program, sourceFile));
+    console.log(
+        sourceFiles.map(sourceFile => {
+            let moduleName = sourceFile.fileName;
+            moduleName = moduleName.substring(0, moduleName.lastIndexOf('.'));
+            return analyser.collectInformation(program, sourceFile, moduleName);
+        })
+    );
 }
 
 let cmdFilePath = process.argv.slice(2);
