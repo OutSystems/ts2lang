@@ -1,7 +1,19 @@
 import { ITsType } from "./ts-types";
 
-export interface ITsUnit {
+export interface ITsAnnotationArgument {
+    name: string;
+    value: string;
+}
 
+export interface ITsAnnotation {
+    name: string;
+    args: ITsAnnotationArgument[]; 
+}
+
+export interface ITsUnit {
+    annotations: ITsAnnotation[];
+    
+    addAnnotation(annot: ITsAnnotation);
 }
 
 // This should not appear
@@ -19,15 +31,35 @@ export interface ITopLevelTsUnit extends ITsUnit {
     addInterface(unit: TsInterface);
 }
 
-export abstract class TopLevelTsUnit implements ITopLevelTsUnit {
+export abstract class AbstractTsUnit implements ITsUnit {
     name: string;
+    annotations: ITsAnnotation[] = [];
+    
+    constructor(name: string) {
+        this.name = name;
+    }
+    
+    addAnnotation(annot: ITsAnnotation) {
+        let args = "";
+        annot.args.forEach(arg => {
+            if(args) {
+                args += ", ";
+            }
+            args += "(name = " + arg.name + ", value = " + arg.value + ")"
+        });
+        console.log("Adding annotation " + annot.name + " to " + this.name + " with arguments " + args);
+        this.annotations.push(annot);
+    }
+}
+
+export abstract class TopLevelTsUnit extends AbstractTsUnit implements ITopLevelTsUnit {
     functions: TsFunction[] = [];
     interfaces: TsInterface[] = [];
     classes: TsClass[] = [];
     modules: TsModule[] = [];
     
     constructor(name: string) {
-        this.name = name;
+        super(name);
     }
     addFunction(unit: TsFunction) {
         console.log("Adding function to " + this.name + ": " + unit.name);
@@ -57,13 +89,13 @@ export class TsParameter {
     }
 }
 
-export class TsFunction implements ITsUnit {
+export class TsFunction extends AbstractTsUnit {
     name: string;
     parameters: TsParameter[];
     returnType: ITsType;
 
     constructor(name: string, parameters: TsParameter[], returnType: ITsType) {
-        this.name = name;
+        super(name);
         this.parameters = parameters;
         this.returnType = returnType;
     }
