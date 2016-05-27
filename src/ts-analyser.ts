@@ -3,20 +3,15 @@ import * as units from "./ts-units";
 import * as types from "./ts-types";
 
 function getCommentsOf(node: ts.Node, sourceText: string) {
-    let comments = ts.getLeadingCommentRanges(sourceText, node.pos);
-    if (comments) {
-        console.log("Comments of: " + node.getText());
-        for (let comment of comments) {
-            console.log(sourceText.substring(comment.pos, comment.end));
-        }
-    }
+    return ts.getLeadingCommentRanges(sourceText, node.pos) || [];
 }
 
 let modules: units.TsModule[] = [];
 
 function visitNode(node: ts.Node, sourceText: string, parentUnit: units.ITopLevelTsUnit) {
     let shouldContinue = true;
-
+    let currentUnit: units.ITsUnit;
+    
     switch (node.kind) {
         case ts.SyntaxKind.SourceFile:
             let sourceFile = <ts.SourceFile> node;
@@ -33,6 +28,7 @@ function visitNode(node: ts.Node, sourceText: string, parentUnit: units.ITopLeve
             parentUnit.addModule(moduleDef);
             // console.log("Visiting children of " + moduleDef.Name);
             walkChildren(node, sourceText, moduleDef);
+            currentUnit = moduleDef;
             break;
 
         case ts.SyntaxKind.ModuleBlock:
@@ -45,6 +41,7 @@ function visitNode(node: ts.Node, sourceText: string, parentUnit: units.ITopLeve
 
             parentUnit.addClass(classDef);
             walkChildren(node, sourceText, classDef);
+            currentUnit = classDef;
             break;
 
         case ts.SyntaxKind.InterfaceDeclaration:
@@ -52,6 +49,7 @@ function visitNode(node: ts.Node, sourceText: string, parentUnit: units.ITopLeve
             let interfaceDefinition = new units.TsInterface(interfaceDeclaration.name.text);
             parentUnit.addInterface(interfaceDefinition);
             walkChildren(node, sourceText, interfaceDefinition);
+            currentUnit = interfaceDefinition;
             break;
 
         case ts.SyntaxKind.MethodDeclaration:
@@ -63,7 +61,14 @@ function visitNode(node: ts.Node, sourceText: string, parentUnit: units.ITopLeve
             });
             let functionDef = new units.TsFunction(functionDeclaration.name.getText(), params, null);
             parentUnit.addFunction(functionDef);
+            
+            currentUnit = functionDef;
             break;
+    }
+    
+    if (currentUnit) {
+        let comments = getCommentsOf(node, sourceText);
+        comments.forEach((c) => console.log(sourceText.substring(c.pos, c.end)));
     }
 }
 
