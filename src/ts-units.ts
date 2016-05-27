@@ -7,95 +7,71 @@ export interface ITsUnit {
 // This should not appear
 // @ts2lang this should appear
 export interface ITopLevelTsUnit extends ITsUnit {
-    Name: string;
+    name: string;
+    functions: TsFunction[];
+    interfaces: TsInterface[];
+    classes: TsClass[];
+    modules: TsModule[];
+    
     addModule(unit: TsModule);
     addFunction(unit: TsFunction);
     addClass(unit: TsClass);
     addInterface(unit: TsInterface);
 }
 
+export abstract class TopLevelTsUnit implements ITopLevelTsUnit {
+    name: string;
+    functions: TsFunction[] = [];
+    interfaces: TsInterface[] = [];
+    classes: TsClass[] = [];
+    modules: TsModule[] = [];
+    
+    constructor(name: string) {
+        this.name = name;
+    }
+    addFunction(unit: TsFunction) {
+        console.log("Adding function to " + this.name + ": " + unit.name);
+        this.functions.push(unit);
+    }
+    addInterface(unit: TsInterface) {
+        console.log("Adding interface to " + this.name + ": " + unit.name);
+        this.interfaces.push(unit);
+    }
+    addClass(unit: TsClass) {
+        console.log("Adding class to " + this.name + ": " + unit.name);
+        this.classes.push(unit);
+    }
+    addModule(unit: TsModule) {
+        console.log("Adding module to " + this.name + ": " + unit.name);
+        this.modules.push(unit);
+    }
+}
+
 export class TsParameter {
-    Name: string;
-    Type: ITsType;
+    name: string;
+    type: ITsType;
 
     constructor(name: string, type: ITsType) {
-        this.Name = name;
-        this.Type = type;
+        this.name = name;
+        this.type = type;
     }
 }
 
 export class TsFunction implements ITsUnit {
-    Name: string;
-    Parameters: TsParameter[];
-    ReturnType: ITsType;
+    name: string;
+    parameters: TsParameter[];
+    returnType: ITsType;
 
     constructor(name: string, parameters: TsParameter[], returnType: ITsType) {
-        this.Name = name;
-        this.Parameters = parameters;
-        this.ReturnType = returnType;
+        this.name = name;
+        this.parameters = parameters;
+        this.returnType = returnType;
     }
 }
 
-export class TsInterface implements ITopLevelTsUnit {
-    Name: string;
+export class TsInterface extends TopLevelTsUnit { }
 
-    constructor(name: string) {
-        this.Name = name;
-    }
+export class TsModule extends TopLevelTsUnit { }
 
-    addFunction(unit: TsFunction) {
-        console.log("Adding function to " + this.Name + ": " + unit.Name);
-    }
-    addInterface(unit: TsInterface) {
-        console.log("Adding interface to " + this.Name + ": " + unit.Name);
-    }
-    addClass(unit: TsClass) {
-        console.log("Adding class to " + this.Name + ": " + unit.Name);
-    }
-    addModule(unit: TsModule) {
-        console.log("Adding module to " + this.Name + ": " + unit.Name);
-    }
-}
-
-export class TsModule implements ITopLevelTsUnit {
-    Name: string;
-
-    constructor(name: string) {
-        this.Name = name;
-    }
-
-    addFunction(unit: TsFunction) {
-        console.log("Adding function to " + this.Name + ": " + unit.Name);
-    }
-    addInterface(unit: TsInterface) {
-        console.log("Adding interface to " + this.Name + ": " + unit.Name);
-    }
-    addClass(unit: TsClass) {
-        console.log("Adding class to " + this.Name + ": " + unit.Name);
-    }
-    addModule(unit: TsModule) {
-        console.log("Adding module to " + this.Name + ": " + unit.Name);
-    }
-}
-
-export class TsClass implements ITopLevelTsUnit {
-    Name: string;
-
-    constructor(name: string) {
-        this.Name = name;
-    }
-
-    addFunction(unit: TsFunction) {
-        console.log("Adding function to " + this.Name + ": " + unit.Name);
-    }
-    addInterface(unit: TsInterface) {
-        console.log("Adding interface to " + this.Name + ": " + unit.Name);
-    }
-    addClass(unit: TsClass) {
-        console.log("Adding class to " + this.Name + ": " + unit.Name);
-    }
-    addModule(unit: TsModule) {
-        console.log("Adding module to " + this.Name + ": " + unit.Name);
-    }
-}
+export class TsClass extends TopLevelTsUnit { }
 
