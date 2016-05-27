@@ -2,6 +2,7 @@
 
 import * as ts from "typescript";
 import * as analyser from "./ts-analyser";
+import * as Templates from "./template-runner";
 
 function main(args: string[]) {
     // allways have to receive an argument and it must be a path
@@ -30,6 +31,10 @@ function main(args: string[]) {
             return analyser.collectInformation(program, sourceFile, moduleName);
         })
     );
+    sourceFiles.forEach(file => {
+        analyser.collectInformation(program, file, file.fileName)
+            .classes.forEach(cls => Templates.parse(cls));
+    });
 }
 
 let cmdFilePath = process.argv.slice(2);
