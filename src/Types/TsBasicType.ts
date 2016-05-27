@@ -1,3 +1,0 @@
-import { ITsType } from "./ITsType";
-
-

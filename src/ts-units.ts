@@ -1,4 +1,4 @@
-import { ITsType } from "./Types/ITsType";
+import { ITsType } from "./ts-types";
 
 export interface ITsUnit {
 
