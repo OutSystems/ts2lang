@@ -21,12 +21,19 @@ function main(args: string[]) {
     };
     
     // TODO: parameter reading
-    // TODO: assuming single input file in configuration
+    // TODO: assuming single task in configuration
     let configuration = readConfiguration(args[0]);
 
-    let filePath = configuration.tasks[0].input as string;
+    let sources: string[] = [];
     
-    let sources = [filePath];
+    configuration.tasks.forEach(task => {
+        let input = task.input;
+        if (typeof input === "string") {
+            sources.push(input);
+        } else {
+            sources.concat(input);
+        }
+    });
     
     let compilerHost = ts.createCompilerHost(compilerOptions, /*setParentNodes */ true);
     let program = ts.createProgram(sources, compilerOptions, compilerHost);
