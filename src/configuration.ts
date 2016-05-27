@@ -21,8 +21,8 @@ export function read(path: string): IConfigurationRoot {
  * strips JS-like comments from code string
  */
 function stripComments(s: string): string {
-    var comments = /(\/\/.*)|(\/\*.*?\*\/)/g
-    return s.replace(comments, "");
+    var comments = /(\/\/.*)|(\/\*.*?\*\/)|"([^"\\]|\\.)*"/g
+    return s.replace(comments, s => s.charAt(0) === '"' ? s : "");
 }
 
 interface IConfigurationRoot {
