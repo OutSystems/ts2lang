@@ -4,7 +4,7 @@
   "description": "TypeScript to (language) bindings generator",
   "main": "ts2lang.js",
   "scripts": {
-    "test": "node bin/ts2lang test/ts2lang.json"
+    "test": "node bin/ts2lang --file test/ts2lang.json"
   },
   "author": "Sérgio Silva",
   "license": "ISC",
@@ -12,6 +12,7 @@
     "tsd": "^0.6.5"
   },
   "dependencies": {
+    "commander": "^2.9.0",
     "typescript": "^1.8.9"
   }
 }
