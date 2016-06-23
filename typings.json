@@ -1,0 +1,7 @@
+{
+  "name": "ts2lang",
+  "globalDependencies": {
+    "commander": "registry:dt/commander#2.3.0+20160317120654",
+    "node": "github:DefinitelyTyped/DefinitelyTyped/node/node.d.ts#e937b3e64af586d19f2ea29fdf771e9dc4feecc8"
+  }
+}

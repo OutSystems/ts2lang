@@ -1,4 +1,7 @@
-/// <reference path="../typings/node/node.d.ts" />
+#!/usr/bin/env node
+/// <reference path="../typings/globals/node/index.d.ts" />
+/// <reference path="../typings/globals/commander/index.d.ts" />
+
 /// <reference path="merge.d.ts" />
 
 import * as ts from "typescript";
@@ -6,26 +9,41 @@ import * as analyser from "./ts-analyser";
 import * as Templates from "./template-runner";
 import { read as readConfiguration, getTaskParameters } from "./configuration";
 import { inspect } from "util";
-import { resolve as pathCombine } from "path";
+import * as program from "commander";
+import { resolve as pathCombine, dirname } from "path";
 import * as merge from 'merge';
 
-function main(args: string[]) {
-    // allways have to receive an argument and it must be a path
-    if (!(!!args && args.length !== 0)) {
-        console.log("No parameters were passed!");
-        process.exit(1);
-    }
 
+var pkg = require("../package.json");
+
+program
+    .version(pkg.version)
+    .option('-f, --file [file]', 'Optional path to the ts2lang config file.')
+    .parse(process.argv);
+
+let filePath: string = undefined;
+let providedFileArg = program["file"];
+
+if (providedFileArg) {
+    filePath = providedFileArg;
+} else {
+    filePath = "./ts2lang.json";
+}
+
+let fileDir = dirname(filePath);
+
+processCommandLineArgs(filePath, fileDir);
+
+function processCommandLineArgs(filePath: string, fileDir: string) {
     const compilerOptions: ts.CompilerOptions = {
         noEmitOnError: true,
         noImplicitAny: true,
         target: ts.ScriptTarget.ES5,
-        module: ts.ModuleKind.AMD
+        module: ts.ModuleKind.AMD,
+        rootDir: fileDir
     };
-    
-    // TODO: parameter reading
-    // TODO: assuming single source per task in configuration
-    let configuration = readConfiguration(args[0]);
+
+    let configuration = readConfiguration(filePath);
 
     let compilerHost = ts.createCompilerHost(compilerOptions, /*setParentNodes */ true);
     
@@ -72,6 +90,3 @@ function main(args: string[]) {
     
     });
 }
-
-let cmdFilePath = process.argv.slice(2);
-main(cmdFilePath);

@@ -2,10 +2,6 @@ import { readFileSync, existsSync } from "fs";
 import { inspect, InspectOptions } from "util";
 
 export function read(path: string): IConfigurationRoot {
-    if (!path) {
-        path = "ts2lang.json";
-    }
-    
     if (!existsSync(path)) {
         throw new Error("Could not read configuration file @ " + path);
     }
