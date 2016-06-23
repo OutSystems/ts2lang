@@ -3,12 +3,14 @@
 /// <reference path="../typings/globals/commander/index.d.ts" />
 
 import * as ts from "typescript";
+import { dirname } from "path";
 import * as analyser from "./ts-analyser";
 import * as Templates from "./template-runner";
 import { read as readConfiguration } from "./configuration";
 import { inspect } from "util";
-
 import * as program from "commander";
+
+
 var pkg = require("../package.json");
 
 program
@@ -25,14 +27,17 @@ if (providedFileArg) {
     filePath = "./ts2lang.json";
 }
 
-processCommandLineArgs(filePath);
+let fileDir = dirname(filePath);
 
-function processCommandLineArgs(filePath: string) {
+processCommandLineArgs(filePath, fileDir);
+
+function processCommandLineArgs(filePath: string, fileDir: string) {
     const compilerOptions: ts.CompilerOptions = {
         noEmitOnError: true,
         noImplicitAny: true,
         target: ts.ScriptTarget.ES5,
-        module: ts.ModuleKind.AMD
+        module: ts.ModuleKind.AMD,
+        rootDir: fileDir
     };
 
     let configuration = readConfiguration(filePath);
