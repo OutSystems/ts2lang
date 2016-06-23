@@ -21,6 +21,15 @@ function stripComments(s: string): string {
     return s.replace(comments, s => s.charAt(0) === '"' ? s : "");
 }
 
+export function getTaskParameters(task: IConfigurationTask): IConfigurationParameterMap {
+    // let map: IConfigurationParameterMap = {};
+    // task.parameters.forEach(p => {
+    //     map[p.name] = p.value;
+    // });
+    // return map;
+    return task.parameters || {};
+}
+
 interface IConfigurationRoot {
     tasks: IConfigurationTask[];
     parameters?: IConfigurationParameter[];
@@ -30,12 +39,16 @@ interface IConfigurationTask {
     input: string | string[];
     output: string;
     template: string;
-    parameters?: IConfigurationParameter[]
+    parameters?: IConfigurationParameterMap;
 }
 
 interface IConfigurationParameter {
     name: string,
     value: string,
+}
+
+interface IConfigurationParameterMap {
+    [name: string]: string;
 }
 
 module ConfigValidator {
