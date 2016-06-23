@@ -117,6 +117,8 @@ function typeNodeToTsType(tn: ts.TypeNode) {
             let typeRef = <ts.TypeReferenceNode>tn;
             return new types.TsIdentifierType(typeRef.typeName.getText());
     }
+    // TODO: check this
+    return undefined;
 }
 
 function walkChildren(node: ts.Node, sourceText: string, parentUnit: units.ITopLevelTsUnit) {

@@ -1,25 +1,46 @@
 import * as Types from "./ts-types";
-import * as Units from "./ts-units"
+import * as Units from "./ts-units";
+import { readFileSync } from "fs";
 
-module DummyTemplate {
-    export function dumpModule(module: Units.TsModule) {
+class DummyTemplate {
+    
+    constructor(private context: Object) {}
+    
+    dumpModule = (module: Units.TsModule) => {
         return module.classes
-            .map(dumpClass)
+            .map(this.dumpClass)
             .join("\n");
     }
     
-    function dumpClass(klass: Units.TsClass) {
-        return `CLASS ${klass.name} {\n` +
-            klass.functions.map(dumpMethod).join("\n") +
+    dumpClass = (klass: Units.TsClass) => {
+        return `CLASS ${klass.name}${this.context["extaInfo1"]} {\n` +
+            klass.functions.map(this.dumpMethod).join("\n") +
             "\n}";
     }
     
-    function dumpMethod(method: Units.TsFunction) {
+    dumpMethod = (method: Units.TsFunction) => {
         let parameters = method.parameters.map(p => `${p.name}: ${p.type.name}`).join(", ");
         return `${method.name}(${parameters})`;
     }
 }
 
-export function transform(module: Units.TsModule): string {
-    return DummyTemplate.dumpModule(module);
+export function transform(module: Units.TsModule, context: Object): string {
+    return (new DummyTemplate(context)).dumpModule(module);
+}
+
+interface ITemplate {
+    transform: (module: Units.TsModule, context: Object) => string;
+}
+
+export function loadTemplate(path: string): ITemplate {
+    // var templateExports: ITemplate = { transform: undefined };
+    // var templateFunc = new Function("exports", readFileSync(path).toString());
+    // templateFunc(templateExports);
+    
+    var templateExports: ITemplate = require(path);
+    if (typeof templateExports.transform !== 'function') {
+        throw new Error(`Template loaded from "${require.resolve(path)}" doesn't provide a "transform" function`);
+    }
+    
+    return templateExports;
 }

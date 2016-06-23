@@ -4,7 +4,9 @@
             "input": "test/source-feed.ts",
             "output": "TODO",
             "template": "TODO",
-            "parameters": []
+            "parameters": {
+                "extraInfo1": "extraValue1"
+            }
         }
     ]
 }
