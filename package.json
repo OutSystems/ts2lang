@@ -4,7 +4,7 @@
   "description": "TypeScript to (language) bindings generator",
   "main": "ts2lang.js",
   "scripts": {
-    "test": "tsc -p src"
+    "test": "tsc -p src && node bin/ts2lang --file test/ts2lang.json"
   },
   "author": "Sérgio Silva",
   "license": "ISC",
