@@ -13,29 +13,48 @@ import * as program from "commander";
 import { resolve as pathCombine, dirname } from "path";
 import * as merge from 'merge';
 import { writeFileSync, existsSync } from 'fs';
+import { sync as isDirectory } from 'is-directory';
 
 
 var pkg = require("../package.json");
 
 program
     .version(pkg.version)
-    .option('-f, --file [file]', 'Optional path to the ts2lang config file.')
+    .option('-f, --file [file]', 'Optional path to the ts2lang config file')
     .parse(process.argv);
 
-let filePath: string = undefined;
-let providedFileArg = program["file"];
+main(program["file"]);
 
-if (providedFileArg) {
-    filePath = providedFileArg;
-} else {
-    filePath = "./ts2lang.json";
+function main(projFile: string) {
+    let {filePath, fileDir} = getProjectPaths(projFile);
+    assertProjectExists(filePath);
+    runProject(filePath, fileDir);
 }
 
-let fileDir = dirname(filePath);
+function getProjectPaths(requestedPath: string) {
+    const DEFAULT_PROJ_FILENAME = "./ts2lang.json";
+    if (!requestedPath) { requestedPath = DEFAULT_PROJ_FILENAME; }
+    if (isDirectory(requestedPath)) {
+        return {
+            filePath: pathCombine(requestedPath, DEFAULT_PROJ_FILENAME),
+            fileDir: requestedPath,
+        }
+    }
+    return {
+        filePath: requestedPath,
+        fileDir: dirname(requestedPath),
+    }
+}
 
-processCommandLineArgs(filePath, fileDir);
+function assertProjectExists(filePath: string) {
+    if (!existsSync(filePath)) {
+        console.error(`Couldn't file project file.`);
+        console.error(`Was looking for it in ${filePath}`);
+        throw new Error("Project file not found.");
+    }
+}
 
-function processCommandLineArgs(filePath: string, fileDir: string) {
+function runProject(filePath: string, fileDir: string) {
     const compilerOptions: ts.CompilerOptions = {
         noEmitOnError: true,
         noImplicitAny: true,
@@ -69,7 +88,7 @@ function processCommandLineArgs(filePath: string, fileDir: string) {
         //         return analyser.collectInformation(program, sourceFile, moduleName);
         //     }), false, 10)
         // );
-        
+
         sources.forEach(source => {
             let file = sourceFiles.filter(file => file.fileName === source)[0];
             
