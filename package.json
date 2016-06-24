@@ -9,7 +9,7 @@
   "author": "Sérgio Silva",
   "license": "ISC",
   "devDependencies": {
-    "tsd": "^0.6.5"
+    "typings": "^1.3.0"
   },
   "dependencies": {
     "commander": "^2.9.0",
