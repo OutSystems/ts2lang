@@ -15,6 +15,7 @@
         "noLib": false,
         "preserveConstEnums": true,
         "suppressImplicitAnyIndexErrors": true,
+        "sourceMap": true,
         "outDir": "../bin"
     }
 }
