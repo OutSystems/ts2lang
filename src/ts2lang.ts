@@ -12,6 +12,7 @@ import { inspect } from "util";
 import * as program from "commander";
 import { resolve as pathCombine, dirname } from "path";
 import * as merge from 'merge';
+import { writeFileSync, existsSync } from 'fs';
 
 
 var pkg = require("../package.json");
@@ -81,12 +82,23 @@ function processCommandLineArgs(filePath: string, fileDir: string) {
                     $template: task.template,
                 }, taskParameters);
                 
-            let transformed = Templates.loadTemplate(pathCombine(process.cwd(), "bin/template-runner.js"))
+            let transformed = Templates.loadTemplate(pathCombine(fileDir, task.template))
                     .transform(analyser.collectInformation(program, file, file.fileName), context); 
-            console.log(transformed);
             
-            // TODO: write output file
+            output(transformed, fileDir, task.output);
+            
         });
     
     });
+}
+
+/**
+ * writes data to the target file or STDOUT if filename provided is '-' or falsey
+ */
+function output(content: string, targetDir: string, target: string) {
+    if (!target || target === "-") {
+        process.stdout.write(content);
+    } else {
+        writeFileSync(pathCombine(targetDir, target), content);
+    }
 }

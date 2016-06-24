@@ -2,8 +2,8 @@
     "tasks": [
         {
             "input": "test/source-feed.ts",
-            "output": "TODO",
-            "template": "TODO",
+            "output": "-",
+            "template": "../bin/template-runner.js",
             "parameters": {
                 "extraInfo1": "extraValue1"
             }
