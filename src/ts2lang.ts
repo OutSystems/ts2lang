@@ -12,29 +12,49 @@ import { inspect } from "util";
 import * as program from "commander";
 import { resolve as pathCombine, dirname } from "path";
 import * as merge from 'merge';
+import { writeFileSync, existsSync } from 'fs';
+import { sync as isDirectory } from 'is-directory';
 
 
 var pkg = require("../package.json");
 
 program
     .version(pkg.version)
-    .option('-f, --file [file]', 'Optional path to the ts2lang config file.')
+    .option('-f, --file [file]', 'Optional path to the ts2lang config file')
     .parse(process.argv);
 
-let filePath: string = undefined;
-let providedFileArg = program["file"];
+main(program["file"]);
 
-if (providedFileArg) {
-    filePath = providedFileArg;
-} else {
-    filePath = "./ts2lang.json";
+function main(projFile: string) {
+    let {filePath, fileDir} = getProjectPaths(projFile);
+    assertProjectExists(filePath);
+    runProject(filePath, fileDir);
 }
 
-let fileDir = dirname(filePath);
+function getProjectPaths(requestedPath: string) {
+    const DEFAULT_PROJ_FILENAME = "./ts2lang.json";
+    if (!requestedPath) { requestedPath = DEFAULT_PROJ_FILENAME; }
+    if (isDirectory(requestedPath)) {
+        return {
+            filePath: pathCombine(requestedPath, DEFAULT_PROJ_FILENAME),
+            fileDir: requestedPath,
+        }
+    }
+    return {
+        filePath: requestedPath,
+        fileDir: dirname(requestedPath),
+    }
+}
 
-processCommandLineArgs(filePath, fileDir);
+function assertProjectExists(filePath: string) {
+    if (!existsSync(filePath)) {
+        console.error(`Couldn't file project file.`);
+        console.error(`Was looking for it in ${filePath}`);
+        throw new Error("Project file not found.");
+    }
+}
 
-function processCommandLineArgs(filePath: string, fileDir: string) {
+function runProject(filePath: string, fileDir: string) {
     const compilerOptions: ts.CompilerOptions = {
         noEmitOnError: true,
         noImplicitAny: true,
@@ -61,14 +81,14 @@ function processCommandLineArgs(filePath: string, fileDir: string) {
 
         let sourceFiles = program.getSourceFiles();
 
-        console.log("Processing: " + sourceFiles.length + " file(s).");
-        console.log(
-            inspect(sourceFiles.map(sourceFile => {
-                let moduleName = sourceFile.fileName;
-                moduleName = moduleName.substring(0, moduleName.lastIndexOf('.'));
-                return analyser.collectInformation(program, sourceFile, moduleName);
-            }), false, 10)
-        );
+        // console.log(
+        //     inspect(sourceFiles.map(sourceFile => {
+        //         let moduleName = sourceFile.fileName;
+        //         moduleName = moduleName.substring(0, moduleName.lastIndexOf('.'));
+        //         return analyser.collectInformation(program, sourceFile, moduleName);
+        //     }), false, 10)
+        // );
+
         sources.forEach(source => {
             let file = sourceFiles.filter(file => file.fileName === source)[0];
             
@@ -81,12 +101,23 @@ function processCommandLineArgs(filePath: string, fileDir: string) {
                     $template: task.template,
                 }, taskParameters);
                 
-            let transformed = Templates.loadTemplate(pathCombine(process.cwd(), "bin/template-runner.js"))
+            let transformed = Templates.loadTemplate(pathCombine(fileDir, task.template))
                     .transform(analyser.collectInformation(program, file, file.fileName), context); 
-            console.log(transformed);
             
-            // TODO: write output file
+            output(transformed, fileDir, task.output);
+            
         });
     
     });
+}
+
+/**
+ * writes data to the target file or STDOUT if filename provided is '-' or falsey
+ */
+function output(content: string, targetDir: string, target: string) {
+    if (!target || target === "-") {
+        process.stdout.write(content);
+    } else {
+        writeFileSync(pathCombine(targetDir, target), content);
+    }
 }
