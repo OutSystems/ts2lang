@@ -10,7 +10,7 @@ import * as Templates from "./template-runner";
 import { read as readConfiguration, getTaskParameters } from "./configuration";
 import { inspect } from "util";
 import * as program from "commander";
-import { resolve as pathCombine, dirname } from "path";
+import { resolve as pathCombine, dirname, normalize } from "path";
 import * as merge from 'merge';
 import { writeFileSync, existsSync } from 'fs';
 import { sync as isDirectory } from 'is-directory';
@@ -76,6 +76,8 @@ function runProject(filePath: string, fileDir: string) {
         } else {
             sources.concat(input);
         }
+
+        sources = sources.map(path => pathCombine(fileDir, path));
     
         let program = ts.createProgram(sources, compilerOptions, compilerHost);
 
@@ -90,7 +92,7 @@ function runProject(filePath: string, fileDir: string) {
         // );
 
         sources.forEach(source => {
-            let file = sourceFiles.filter(file => file.fileName === source)[0];
+            let file = sourceFiles.filter(file => isSamePath(file.fileName, source))[0];
             
             let taskParameters = getTaskParameters(task);
             
@@ -120,4 +122,16 @@ function output(content: string, targetDir: string, target: string) {
     } else {
         writeFileSync(pathCombine(targetDir, target), content);
     }
+}
+
+/**
+ * given two absolute paths, check if they're the same path, despite having
+ * different path separators (on Windows, node-fs and tsc will report the paths differently)
+ */
+function isSamePath(path1, path2) {
+    // TODO: improve this for case-sensitive filesystems
+    //       or maybe use typescript's path handling functions
+    let p1 = normalize(path1).toLowerCase();
+    let p2 = normalize(path2).toLowerCase();
+    return p1 === p2;
 }

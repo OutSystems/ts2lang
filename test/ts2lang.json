@@ -1,7 +1,7 @@
 {
     "tasks": [
         {
-            "input": "test/source-feed.ts",
+            "input": "source-feed.ts",
             "output": "-",
             "template": "../bin/template-runner.js",
             "parameters": {
