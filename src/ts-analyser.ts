@@ -68,22 +68,18 @@ function visitNode(node: ts.Node, sourceText: string, parentUnit: units.ITopLeve
     
     if (currentUnit) {
         let comments = getCommentsOf(node, sourceText);
-        console.log("Processing comments...")
         comments
             .map((c) => processComment(sourceText.substring(c.pos, c.end)))
             .filter((c) => !!c)
             .forEach((c) => currentUnit.addAnnotation(c));
 
-        console.log("Done!")
     }
 }
 
 function processComment(comment: string): units.ITsAnnotation {
     let startOfMultilineComment = comment.indexOf("/*");
     let commentText = comment.substr(2); // drop first two characters (either // or /*)
-    
-    console.log("Final text:", commentText);
-    
+        
     let ts2langRegex = /@ts2lang\s*(\w+)\((.*)\)/g;
     let argumentRegex = /(([^=\s\|]+)\s*=\s*([^=\|]+))/g;
     let ts2langMatches = ts2langRegex.exec(commentText);
@@ -92,11 +88,8 @@ function processComment(comment: string): units.ITsAnnotation {
         let annotationName = ts2langMatches[1];
         let annotationArgs: units.ITsAnnotationArgument[] = [];
         
-        console.log("Found annotation:", annotationName);
-        
         // Do we have arguments?
         if (ts2langMatches[2]) {
-            console.log("Found some comments:", ts2langMatches[2]);
             
             let argumentText = ts2langMatches[2];
             let argumentResults: RegExpExecArray;

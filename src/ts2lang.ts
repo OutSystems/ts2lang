@@ -61,14 +61,14 @@ function processCommandLineArgs(filePath: string, fileDir: string) {
 
         let sourceFiles = program.getSourceFiles();
 
-        console.log("Processing: " + sourceFiles.length + " file(s).");
-        console.log(
-            inspect(sourceFiles.map(sourceFile => {
-                let moduleName = sourceFile.fileName;
-                moduleName = moduleName.substring(0, moduleName.lastIndexOf('.'));
-                return analyser.collectInformation(program, sourceFile, moduleName);
-            }), false, 10)
-        );
+        // console.log(
+        //     inspect(sourceFiles.map(sourceFile => {
+        //         let moduleName = sourceFile.fileName;
+        //         moduleName = moduleName.substring(0, moduleName.lastIndexOf('.'));
+        //         return analyser.collectInformation(program, sourceFile, moduleName);
+        //     }), false, 10)
+        // );
+        
         sources.forEach(source => {
             let file = sourceFiles.filter(file => file.fileName === source)[0];
             

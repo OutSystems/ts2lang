@@ -47,7 +47,6 @@ export abstract class AbstractTsUnit implements ITsUnit {
             }
             args += "(name = " + arg.name + ", value = " + arg.value + ")"
         });
-        console.log("Adding annotation " + annot.name + " to " + this.name + " with arguments " + args);
         this.annotations.push(annot);
     }
 }
@@ -62,19 +61,15 @@ export abstract class TopLevelTsUnit extends AbstractTsUnit implements ITopLevel
         super(name);
     }
     addFunction(unit: TsFunction) {
-        console.log("Adding function to " + this.name + ": " + unit.name);
         this.functions.push(unit);
     }
     addInterface(unit: TsInterface) {
-        console.log("Adding interface to " + this.name + ": " + unit.name);
         this.interfaces.push(unit);
     }
     addClass(unit: TsClass) {
-        console.log("Adding class to " + this.name + ": " + unit.name);
         this.classes.push(unit);
     }
     addModule(unit: TsModule) {
-        console.log("Adding module to " + this.name + ": " + unit.name);
         this.modules.push(unit);
     }
 }
