@@ -13,7 +13,7 @@ class DummyTemplate {
     }
     
     dumpClass = (klass: Units.TsClass) => {
-        return `CLASS ${klass.name}${this.context["extaInfo1"]} {\n` +
+        return `CLASS ${klass.name}${this.context["extraInfo1"]} {\n` +
             klass.functions.map(this.dumpMethod).join("\n") +
             "\n}";
     }

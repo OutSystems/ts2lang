@@ -4,7 +4,8 @@
   "description": "TypeScript to (language) bindings generator",
   "main": "ts2lang.js",
   "scripts": {
-    "test": "tsc -p src && node bin/ts2lang --file test/ts2lang.json"
+    "test": "tsc -p src && node bin/ts2lang --file test/ts2lang.json",
+    "go": "tsc -p src && node bin/ts2lang"
   },
   "author": "Sérgio Silva",
   "license": "MIT",
@@ -16,6 +17,6 @@
     "commander": "^2.9.0",
     "is-directory": "^0.3.1",
     "merge": "^1.2.0",
-    "typescript": "^1.8.9"
+    "typescript": "^2.0.3"
   }
 }

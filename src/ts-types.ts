@@ -51,6 +51,12 @@ export class TsBasicType implements ITsType {
     }
 }
 
+export const TsBooleanType = new TsBasicType("boolean");
+export const TsNumberType = new TsBasicType("number");
+export const TsStringType = new TsBasicType("string");
+export const TsVoidType = new TsBasicType("void");
+
+
 export class TsFunctionType implements ITsType {
 
     private retType: ITsType;
@@ -66,7 +72,7 @@ export class TsFunctionType implements ITsType {
     }
 
     public get name(): string {
-        throw Error("InvalidOperationException");
+        return "Function";
     }
 }
 
@@ -92,5 +98,22 @@ export class TsIdentifierType implements ITsType {
 
     public get name(): string {
         return this._name;
+    }
+}
+
+export class TsUnionType implements ITsType {
+
+    private innerTypes: ITsType[];
+
+    constructor(innerTypes: ITsType[]) {
+        this.innerTypes = innerTypes;
+    }
+
+    public get isBasic(): boolean {
+        return false;
+    }
+
+    public get name(): string {
+        return this.innerTypes.map(innerType => innerType.name).join(" | ");
     }
 }
