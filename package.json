@@ -1,6 +1,6 @@
 {
   "name": "ts2lang",
-  "version": "1.0.3",
+  "version": "1.0.3-npmfriendly2",
   "description": "TypeScript to (language) bindings generator",
   "main": "bin/ts2lang.js",
   "bin": {
@@ -13,6 +13,7 @@
   "author": "Sérgio Silva",
   "license": "ISC",
   "repository": "OutSystems/ts2lang",
+  "preferGlobal": true,
   "dependencies": {
     "commander": "^2.9.0",
     "is-directory": "^0.3.1",
