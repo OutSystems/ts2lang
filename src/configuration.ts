@@ -30,24 +30,24 @@ export function getTaskParameters(task: IConfigurationTask): IConfigurationParam
     return task.parameters || {};
 }
 
-interface IConfigurationRoot {
+export interface IConfigurationRoot {
     tasks: IConfigurationTask[];
     parameters?: IConfigurationParameter[];
 }
 
-interface IConfigurationTask {
+export interface IConfigurationTask {
     input: string | string[];
     output: string;
     template: string;
     parameters?: IConfigurationParameterMap;
 }
 
-interface IConfigurationParameter {
+export interface IConfigurationParameter {
     name: string,
     value: string,
 }
 
-interface IConfigurationParameterMap {
+export interface IConfigurationParameterMap {
     [name: string]: string;
 }
 

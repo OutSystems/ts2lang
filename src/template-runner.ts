@@ -28,7 +28,7 @@ export function transform(module: Units.TsModule, context: Object): string {
     return (new DummyTemplate(context)).dumpModule(module);
 }
 
-interface ITemplate {
+export interface ITemplate {
     transform: (module: Units.TsModule, context: Object) => string;
 }
 
