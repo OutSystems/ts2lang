@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 /// <reference path="../typings/globals/node/index.d.ts" />
 /// <reference path="../typings/globals/commander/index.d.ts" />
 
@@ -9,29 +8,12 @@ import * as analyser from "./ts-analyser";
 import * as Templates from "./template-runner";
 import { read as readConfiguration, getTaskParameters } from "./configuration";
 import { inspect } from "util";
-import * as program from "commander";
 import { resolve as pathCombine, dirname, normalize } from "path";
 import * as merge from 'merge';
 import { writeFileSync, existsSync } from 'fs';
 import { sync as isDirectory } from 'is-directory';
 
-
-var pkg = require("../package.json");
-
-program
-    .version(pkg.version)
-    .option('-f, --file [file]', 'Optional path to the ts2lang config file')
-    .parse(process.argv);
-
-main(program["file"]);
-
-function main(projFile: string) {
-    let {filePath, fileDir} = getProjectPaths(projFile);
-    assertProjectExists(filePath);
-    runProject(filePath, fileDir);
-}
-
-function getProjectPaths(requestedPath: string) {
+export function getProjectPaths(requestedPath: string) {
     const DEFAULT_PROJ_FILENAME = "./ts2lang.json";
     if (!requestedPath) { requestedPath = DEFAULT_PROJ_FILENAME; }
     if (isDirectory(requestedPath)) {
@@ -46,7 +28,7 @@ function getProjectPaths(requestedPath: string) {
     }
 }
 
-function assertProjectExists(filePath: string) {
+export function assertProjectExists(filePath: string) {
     if (!existsSync(filePath)) {
         console.error(`Couldn't file project file.`);
         console.error(`Was looking for it in ${filePath}`);
@@ -54,7 +36,7 @@ function assertProjectExists(filePath: string) {
     }
 }
 
-function runProject(filePath: string, fileDir: string) {
+export function runProject(filePath: string, fileDir: string) {
     const compilerOptions: ts.CompilerOptions = {
         noEmitOnError: true,
         noImplicitAny: true,
