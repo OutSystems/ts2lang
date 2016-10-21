@@ -4,7 +4,7 @@
   "description": "TypeScript to (language) bindings generator",
   "main": "bin/ts2lang.js",
   "bin": {
-    "ts2lang": "bin/tsviz-main.js"
+    "ts2lang": "bin/ts2lang-main.js"
   },
   "scripts": {
     "test": "tsc -p src && node bin/ts2lang-main --file test/ts2lang.json",
