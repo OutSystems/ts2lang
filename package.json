@@ -1,6 +1,6 @@
 {
   "name": "ts2lang",
-  "version": "1.0.1",
+  "version": "1.0.3",
   "description": "TypeScript to (language) bindings generator",
   "main": "bin/ts2lang.js",
   "bin": {
@@ -17,6 +17,6 @@
     "commander": "^2.9.0",
     "is-directory": "^0.3.1",
     "merge": "^1.2.0",
-    "typescript": "^2.0.3"
+    "typescript": "=1.8.10"
   }
 }
