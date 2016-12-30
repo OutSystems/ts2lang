@@ -41,6 +41,16 @@ function visitNode(node, sourceText, parentUnit) {
             walkChildren(node, sourceText, interfaceDefinition);
             currentUnit = interfaceDefinition;
             break;
+        case ts.SyntaxKind.EnumDeclaration:
+            var enumDeclaration = node;
+            var options = enumDeclaration.members.map(function (m) {
+                var number = parseInt(m.getLastToken().getText());
+                return new units.TsOption(m.name.getText(), isNaN(number) ? undefined : number);
+            });
+            var enumDef = new units.TsEnum(enumDeclaration.name.getText(), options);
+            parentUnit.addEnum(enumDef);
+            currentUnit = enumDef;
+            break;
         case ts.SyntaxKind.VariableDeclaration:
         case ts.SyntaxKind.MethodDeclaration:
         case ts.SyntaxKind.FunctionDeclaration:

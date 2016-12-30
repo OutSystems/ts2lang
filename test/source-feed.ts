@@ -14,3 +14,8 @@ class Point {
         return this.distance(origin);
     }
 }
+
+enum Enumz { 
+    A = 1,
+    B,
+}

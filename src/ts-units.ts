@@ -24,11 +24,13 @@ export interface ITopLevelTsUnit extends ITsUnit {
     interfaces: TsInterface[];
     classes: TsClass[];
     modules: TsModule[];
+    enums: TsEnum[];
     
     addModule(unit: TsModule);
     addFunction(unit: TsFunction);
     addClass(unit: TsClass);
     addInterface(unit: TsInterface);
+    addEnum(unit: TsEnum);
 }
 
 export abstract class AbstractTsUnit implements ITsUnit {
@@ -56,6 +58,7 @@ export abstract class TopLevelTsUnit extends AbstractTsUnit implements ITopLevel
     interfaces: TsInterface[] = [];
     classes: TsClass[] = [];
     modules: TsModule[] = [];
+    enums: TsEnum[] = [];
     
     constructor(name: string) {
         super(name);
@@ -72,6 +75,9 @@ export abstract class TopLevelTsUnit extends AbstractTsUnit implements ITopLevel
     addModule(unit: TsModule) {
         this.modules.push(unit);
     }
+    addEnum(unit: TsEnum) {
+        this.enums.push(unit);
+    }
 }
 
 export class TsParameter {
@@ -84,6 +90,16 @@ export class TsParameter {
     }
 }
 
+export class TsOption {
+    name: string;
+    id: number;
+
+    constructor(name: string, id: number) {
+        this.name = name;
+        this.id = id;
+    }
+}
+
 export class TsFunction extends AbstractTsUnit {
     name: string;
     parameters: TsParameter[];
@@ -93,6 +109,17 @@ export class TsFunction extends AbstractTsUnit {
         super(name);
         this.parameters = parameters;
         this.returnType = returnType;
+    }
+}
+
+export class TsEnum extends AbstractTsUnit {
+    name: string;
+    options: TsOption[];
+
+    constructor(name: string, options: TsOption[]) {
+        super(name);
+        this.name = name;
+        this.options = options;
     }
 }
 
