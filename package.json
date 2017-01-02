@@ -18,6 +18,10 @@
     "commander": "^2.9.0",
     "is-directory": "^0.3.1",
     "merge": "^1.2.0",
-    "typescript": "=1.8.10"
+    "typescript": "^2.1.4"
+  },
+  "devDependencies": {
+    "@types/commander": "^2.3.31",
+    "@types/node": "^6.0.55"
   }
 }
