@@ -59,14 +59,6 @@ var TsParameter = (function () {
     return TsParameter;
 }());
 exports.TsParameter = TsParameter;
-var TsEnumOption = (function () {
-    function TsEnumOption(name, id) {
-        this.name = name;
-        this.id = id;
-    }
-    return TsEnumOption;
-}());
-exports.TsEnumOption = TsEnumOption;
 var TsFunction = (function (_super) {
     __extends(TsFunction, _super);
     function TsFunction(name, parameters, returnType) {
@@ -89,6 +81,14 @@ var TsEnum = (function (_super) {
     return TsEnum;
 }(AbstractTsUnit));
 exports.TsEnum = TsEnum;
+var TsEnumOption = (function () {
+    function TsEnumOption(name, id) {
+        this.name = name;
+        this.id = id;
+    }
+    return TsEnumOption;
+}());
+exports.TsEnumOption = TsEnumOption;
 var TsInterface = (function (_super) {
     __extends(TsInterface, _super);
     function TsInterface() {
