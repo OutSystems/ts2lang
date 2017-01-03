@@ -55,8 +55,9 @@ function visitNode(node: ts.Node, sourceText: string, parentUnit: units.ITopLeve
         case ts.SyntaxKind.EnumDeclaration:
             let enumDeclaration = <ts.EnumDeclaration> node;
             let options: units.TsEnumOption[] = enumDeclaration.members.map(m => {
-                var number = parseInt(m.getLastToken().getText());
-                return new units.TsEnumOption(m.name.getText(), isNaN(number) ? undefined : number);
+                var optionName = m.name.getText();
+                var optionValue = m.initializer ? parseInt(m.initializer.getText()) : undefined;
+                return new units.TsEnumOption(optionName, optionValue);
             });
             let enumDef = new units.TsEnum(enumDeclaration.name.getText(), options);
             parentUnit.addEnum(enumDef);

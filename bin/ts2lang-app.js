@@ -16,7 +16,4 @@ function run() {
     main(program["file"]);
 }
 exports.run = run;
-if (!module.parent) {
-    run();
-}
 //# sourceMappingURL=ts2lang-app.js.map
