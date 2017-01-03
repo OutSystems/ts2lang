@@ -54,9 +54,9 @@ function visitNode(node: ts.Node, sourceText: string, parentUnit: units.ITopLeve
 
         case ts.SyntaxKind.EnumDeclaration:
             let enumDeclaration = <ts.EnumDeclaration> node;
-            let options: units.TsOption[] = enumDeclaration.members.map(m => {
+            let options: units.TsEnumOption[] = enumDeclaration.members.map(m => {
                 var number = parseInt(m.getLastToken().getText());
-                return new units.TsOption(m.name.getText(), isNaN(number) ? undefined : number);
+                return new units.TsEnumOption(m.name.getText(), isNaN(number) ? undefined : number);
             });
             let enumDef = new units.TsEnum(enumDeclaration.name.getText(), options);
             parentUnit.addEnum(enumDef);

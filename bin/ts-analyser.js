@@ -45,7 +45,7 @@ function visitNode(node, sourceText, parentUnit) {
             var enumDeclaration = node;
             var options = enumDeclaration.members.map(function (m) {
                 var number = parseInt(m.getLastToken().getText());
-                return new units.TsOption(m.name.getText(), isNaN(number) ? undefined : number);
+                return new units.TsEnumOption(m.name.getText(), isNaN(number) ? undefined : number);
             });
             var enumDef = new units.TsEnum(enumDeclaration.name.getText(), options);
             parentUnit.addEnum(enumDef);

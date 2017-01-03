@@ -59,14 +59,14 @@ var TsParameter = (function () {
     return TsParameter;
 }());
 exports.TsParameter = TsParameter;
-var TsOption = (function () {
-    function TsOption(name, id) {
+var TsEnumOption = (function () {
+    function TsEnumOption(name, id) {
         this.name = name;
         this.id = id;
     }
-    return TsOption;
+    return TsEnumOption;
 }());
-exports.TsOption = TsOption;
+exports.TsEnumOption = TsEnumOption;
 var TsFunction = (function (_super) {
     __extends(TsFunction, _super);
     function TsFunction(name, parameters, returnType) {

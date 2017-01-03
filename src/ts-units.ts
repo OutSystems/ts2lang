@@ -90,16 +90,6 @@ export class TsParameter {
     }
 }
 
-export class TsOption {
-    name: string;
-    id: number;
-
-    constructor(name: string, id: number) {
-        this.name = name;
-        this.id = id;
-    }
-}
-
 export class TsFunction extends AbstractTsUnit {
     name: string;
     parameters: TsParameter[];
@@ -114,12 +104,22 @@ export class TsFunction extends AbstractTsUnit {
 
 export class TsEnum extends AbstractTsUnit {
     name: string;
-    options: TsOption[];
+    options: TsEnumOption[];
 
-    constructor(name: string, options: TsOption[]) {
+    constructor(name: string, options: TsEnumOption[]) {
         super(name);
         this.name = name;
         this.options = options;
+    }
+}
+
+export class TsEnumOption {
+    name: string;
+    id: number;
+
+    constructor(name: string, id: number) {
+        this.name = name;
+        this.id = id;
     }
 }
 
