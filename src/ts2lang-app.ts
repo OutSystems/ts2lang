@@ -19,5 +19,3 @@ export function run() {
 
     main(program["file"]);
 }
-
-if (!module.parent) { run(); }
