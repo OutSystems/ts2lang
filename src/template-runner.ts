@@ -7,9 +7,8 @@ class DummyTemplate {
     constructor(private context: Object) {}
     
     dumpModule = (module: Units.TsModule) => {
-        return module.classes
-            .map(this.dumpClass)
-            .join("\n");
+        return module.classes.map(this.dumpClass).join("\n") + "\n" + 
+            module.enums.map(this.dumpEnum).join("\n");
     }
     
     dumpClass = (klass: Units.TsClass) => {
@@ -21,6 +20,12 @@ class DummyTemplate {
     dumpMethod = (method: Units.TsFunction) => {
         let parameters = method.parameters.map(p => `${p.name}: ${p.type.name}`).join(", ");
         return `${method.name}(${parameters})`;
+    }
+
+    dumpEnum = (enumz: Units.TsEnum) => {
+        return `ENUM ${enumz.name} {\n` +
+            enumz.options.map(x => { return x.name + (x.id === undefined? "" : " = " + x.id) }).join(",\n") +
+            "\n}";
     }
 }
 

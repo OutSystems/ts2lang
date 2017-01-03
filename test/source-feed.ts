@@ -15,7 +15,11 @@ class Point {
     }
 }
 
-enum Enumz { 
+enum MyEnum { 
+    // cenas
     A = 1,
-    B,
+    /* TEST */
+    B,//67
+    C = 99 /* xxx 45 */,
+    D = 2 // 33
 }
