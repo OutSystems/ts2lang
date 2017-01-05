@@ -1,6 +1,6 @@
 {
   "name": "ts2lang",
-  "version": "1.0.5",
+  "version": "1.0.5-1",
   "description": "TypeScript to (language) bindings generator",
   "main": "bin/ts2lang.js",
   "bin": {
