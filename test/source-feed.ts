@@ -14,3 +14,12 @@ class Point {
         return this.distance(origin);
     }
 }
+
+enum MyEnum { 
+    // cenas
+    A = 1,
+    /* TEST */
+    B,//67
+    C = 99 /* xxx 45 */,
+    D = 2 // 33
+}

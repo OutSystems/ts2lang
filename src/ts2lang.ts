@@ -1,6 +1,3 @@
-/// <reference path="../typings/globals/node/index.d.ts" />
-/// <reference path="../typings/globals/commander/index.d.ts" />
-
 /// <reference path="merge.d.ts" />
 
 import * as ts from "typescript";

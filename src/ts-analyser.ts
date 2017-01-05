@@ -51,7 +51,19 @@ function visitNode(node: ts.Node, sourceText: string, parentUnit: units.ITopLeve
             walkChildren(node, sourceText, interfaceDefinition);
             currentUnit = interfaceDefinition;
             break;
-        
+
+        case ts.SyntaxKind.EnumDeclaration:
+            let enumDeclaration = <ts.EnumDeclaration> node;
+            let options: units.TsEnumOption[] = enumDeclaration.members.map(m => {
+                var optionName = m.name.getText();
+                var optionValue = m.initializer ? parseInt(m.initializer.getText()) : undefined;
+                return new units.TsEnumOption(optionName, optionValue);
+            });
+            let enumDef = new units.TsEnum(enumDeclaration.name.getText(), options);
+            parentUnit.addEnum(enumDef);
+            currentUnit = enumDef;
+            break;
+
         case ts.SyntaxKind.VariableDeclaration:
         case ts.SyntaxKind.MethodDeclaration:
         case ts.SyntaxKind.FunctionDeclaration:

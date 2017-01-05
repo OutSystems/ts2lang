@@ -4,9 +4,9 @@ var analyser = require("./ts-analyser");
 var Templates = require("./template-runner");
 var configuration_1 = require("./configuration");
 var path_1 = require("path");
-var merge = require('merge');
-var fs_1 = require('fs');
-var is_directory_1 = require('is-directory');
+var merge = require("merge");
+var fs_1 = require("fs");
+var is_directory_1 = require("is-directory");
 function getProjectPaths(requestedPath) {
     var DEFAULT_PROJ_FILENAME = "./ts2lang.json";
     if (!requestedPath) {

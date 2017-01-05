@@ -25,11 +25,13 @@ exports.AbstractTsUnit = AbstractTsUnit;
 var TopLevelTsUnit = (function (_super) {
     __extends(TopLevelTsUnit, _super);
     function TopLevelTsUnit(name) {
-        _super.call(this, name);
-        this.functions = [];
-        this.interfaces = [];
-        this.classes = [];
-        this.modules = [];
+        var _this = _super.call(this, name) || this;
+        _this.functions = [];
+        _this.interfaces = [];
+        _this.classes = [];
+        _this.modules = [];
+        _this.enums = [];
+        return _this;
     }
     TopLevelTsUnit.prototype.addFunction = function (unit) {
         this.functions.push(unit);
@@ -42,6 +44,9 @@ var TopLevelTsUnit = (function (_super) {
     };
     TopLevelTsUnit.prototype.addModule = function (unit) {
         this.modules.push(unit);
+    };
+    TopLevelTsUnit.prototype.addEnum = function (unit) {
+        this.enums.push(unit);
     };
     return TopLevelTsUnit;
 }(AbstractTsUnit));
@@ -57,17 +62,37 @@ exports.TsParameter = TsParameter;
 var TsFunction = (function (_super) {
     __extends(TsFunction, _super);
     function TsFunction(name, parameters, returnType) {
-        _super.call(this, name);
-        this.parameters = parameters;
-        this.returnType = returnType;
+        var _this = _super.call(this, name) || this;
+        _this.parameters = parameters;
+        _this.returnType = returnType;
+        return _this;
     }
     return TsFunction;
 }(AbstractTsUnit));
 exports.TsFunction = TsFunction;
+var TsEnum = (function (_super) {
+    __extends(TsEnum, _super);
+    function TsEnum(name, options) {
+        var _this = _super.call(this, name) || this;
+        _this.name = name;
+        _this.options = options;
+        return _this;
+    }
+    return TsEnum;
+}(AbstractTsUnit));
+exports.TsEnum = TsEnum;
+var TsEnumOption = (function () {
+    function TsEnumOption(name, id) {
+        this.name = name;
+        this.id = id;
+    }
+    return TsEnumOption;
+}());
+exports.TsEnumOption = TsEnumOption;
 var TsInterface = (function (_super) {
     __extends(TsInterface, _super);
     function TsInterface() {
-        _super.apply(this, arguments);
+        return _super.apply(this, arguments) || this;
     }
     return TsInterface;
 }(TopLevelTsUnit));
@@ -75,7 +100,7 @@ exports.TsInterface = TsInterface;
 var TsModule = (function (_super) {
     __extends(TsModule, _super);
     function TsModule() {
-        _super.apply(this, arguments);
+        return _super.apply(this, arguments) || this;
     }
     return TsModule;
 }(TopLevelTsUnit));
@@ -83,7 +108,7 @@ exports.TsModule = TsModule;
 var TsClass = (function (_super) {
     __extends(TsClass, _super);
     function TsClass() {
-        _super.apply(this, arguments);
+        return _super.apply(this, arguments) || this;
     }
     return TsClass;
 }(TopLevelTsUnit));

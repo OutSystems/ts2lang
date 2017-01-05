@@ -36,7 +36,7 @@ var ConfigValidator;
     function checkKnownProps(obj, props, where) {
         Object.keys(obj)
             .filter(function (key) { return props.indexOf(key) === -1; })
-            .forEach(function (key) { return console.warn(("WARNING: unknown '" + key + "' configuration'") +
+            .forEach(function (key) { return console.warn("WARNING: unknown '" + key + "' configuration'" +
             where ? " in " + where : ""); });
     }
     function validate(root) {
