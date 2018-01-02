@@ -66,6 +66,7 @@ function visitNode(node: ts.Node, sourceText: string, parentUnit: units.ITopLeve
 
         case ts.SyntaxKind.VariableDeclaration:
         case ts.SyntaxKind.MethodDeclaration:
+        case ts.SyntaxKind.MethodSignature:
         case ts.SyntaxKind.FunctionDeclaration:
             let functionDeclaration = <ts.SignatureDeclaration> node;
 
@@ -118,28 +119,30 @@ function processComment(comment: string): units.ITsAnnotation {
 }
 
 function typeNodeToTsType(tn: ts.TypeNode): types.ITsType {
-    switch(tn.kind) {
-        case ts.SyntaxKind.TypeReference:
-            let typeRef = <ts.TypeReferenceNode>tn;
-            return new types.TsIdentifierType(typeRef.typeName.getText());
-        case ts.SyntaxKind.BooleanKeyword:
-            return types.TsBooleanType;
-        case ts.SyntaxKind.StringKeyword:
-            return types.TsStringType;
-        case ts.SyntaxKind.NumberKeyword:
-            return types.TsNumberType;
-        case ts.SyntaxKind.VoidKeyword:
-            return types.TsVoidType;
-        case ts.SyntaxKind.UnionType:
-            let typeUnion = <ts.UnionTypeNode>tn;
-            return new types.TsUnionType(typeUnion.types.map(typeNodeToTsType));
-        case ts.SyntaxKind.FunctionType:
-            let functionType = <ts.FunctionTypeNode>tn;
-            var paramTypes = functionType.parameters.map(param => { return { name: param.name.getText(), type: typeNodeToTsType(param.type) } });
-            return new types.TsFunctionType(paramTypes, typeNodeToTsType(functionType.type));
+    if (tn) {
+        switch(tn.kind) {
+            case ts.SyntaxKind.TypeReference:
+                let typeRef = <ts.TypeReferenceNode>tn;
+                return new types.TsIdentifierType(typeRef.typeName.getText(), (typeRef.typeArguments || new Array()).map(a => typeNodeToTsType(a)));
+            case ts.SyntaxKind.BooleanKeyword:
+                return types.TsBooleanType;
+            case ts.SyntaxKind.StringKeyword:
+                return types.TsStringType;
+            case ts.SyntaxKind.NumberKeyword:
+                return types.TsNumberType;
+            case ts.SyntaxKind.UnionType:
+                let typeUnion = <ts.UnionTypeNode>tn;
+                return new types.TsUnionType(typeUnion.types.map(typeNodeToTsType));
+            case ts.SyntaxKind.FunctionType:
+                let functionType = <ts.FunctionTypeNode>tn;
+                var paramTypes = functionType.parameters.map(param => { return { name: param.name.getText(), type: typeNodeToTsType(param.type) } });
+                return new types.TsFunctionType(paramTypes, typeNodeToTsType(functionType.type));
+            case ts.SyntaxKind.ArrayType:
+                let typeArray = <ts.ArrayTypeNode>tn;
+                return new types.TsArrayType(typeNodeToTsType(typeArray.elementType));
+        }
     }
-
-    return undefined;
+    return types.TsVoidType;
 }
 
 function walkChildren(node: ts.Node, sourceText: string, parentUnit: units.ITopLevelTsUnit) {

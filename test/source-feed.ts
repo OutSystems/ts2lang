@@ -1,3 +1,8 @@
+interface IPoint {
+    distanceFromOrigin(): Promise<number[]>;
+    distance(other: Point): number;
+}
+
 class Point {
     x: number;
     y: number;

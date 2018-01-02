@@ -99,6 +99,10 @@ export class TsIdentifierType implements ITsType {
     public get name(): string {
         return this._name;
     }
+
+    public get parameters(): ITsType[] {
+        return this.typeParameters;
+    }
 }
 
 export class TsUnionType implements ITsType {

@@ -2,12 +2,21 @@ import * as Types from "./ts-types";
 import * as Units from "./ts-units";
 import { readFileSync } from "fs";
 
+
+function getFunctionReturnType(func: Units.TsFunction): string {
+    if ((<Types.TsIdentifierType> func.returnType).parameters) {
+        return (<Types.TsIdentifierType>func.returnType).parameters[0].name;
+    }
+    return func.returnType.name;
+}
+
 class DummyTemplate {
     
     constructor(private context: Object) {}
     
     dumpModule = (module: Units.TsModule) => {
         return module.classes.map(this.dumpClass).join("\n") + "\n" + 
+            module.interfaces.map(this.dumpInterface).join("\n") + "\n" + 
             module.enums.map(this.dumpEnum).join("\n");
     }
     
@@ -16,10 +25,16 @@ class DummyTemplate {
             klass.functions.map(this.dumpMethod).join("\n") +
             "\n}";
     }
+
+    dumpInterface = (interf: Units.TsInterface) => {
+        return `INTERFACE ${interf.name}${this.context["extraInfo1"]} {\n` +
+            interf.functions.map(this.dumpMethod).join("\n") +
+            "\n}";
+    }
     
     dumpMethod = (method: Units.TsFunction) => {
         let parameters = method.parameters.map(p => `${p.name}: ${p.type.name}`).join(", ");
-        return `${method.name}(${parameters})`;
+        return `${getFunctionReturnType(method)} ${method.name}(${parameters})`;
     }
 
     dumpEnum = (enumz: Units.TsEnum) => {
