@@ -78,6 +78,16 @@ function visitNode(node: ts.Node, sourceText: string, parentUnit: units.ITopLeve
             
             currentUnit = functionDef;
             break;
+
+        case ts.SyntaxKind.PropertySignature:
+        case ts.SyntaxKind.PropertyDeclaration:
+            let propertyDeclaration = <ts.PropertySignature | ts.PropertyDeclaration> node;
+            
+            if (parentUnit instanceof units.TsInterface || parentUnit instanceof units.TsClass) {
+                let propertyDef = new units.TsProperty(propertyDeclaration.name.getText(), typeNodeToTsType(propertyDeclaration.type));
+                parentUnit.addProperty(propertyDef);
+            }
+            break;
     }
     
     if (currentUnit) {
@@ -123,7 +133,8 @@ function typeNodeToTsType(tn: ts.TypeNode): types.ITsType {
         switch(tn.kind) {
             case ts.SyntaxKind.TypeReference:
                 let typeRef = <ts.TypeReferenceNode>tn;
-                return new types.TsIdentifierType(typeRef.typeName.getText(), (typeRef.typeArguments || new Array()).map(a => typeNodeToTsType(a)));
+                let args = typeRef.typeArguments ? typeRef.typeArguments.map(a => typeNodeToTsType(a)) : [];
+                return new types.TsIdentifierType(typeRef.typeName.getText(), args);
             case ts.SyntaxKind.BooleanKeyword:
                 return types.TsBooleanType;
             case ts.SyntaxKind.StringKeyword:

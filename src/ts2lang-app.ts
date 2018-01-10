@@ -3,7 +3,7 @@
 import * as program from "commander";
 import {getProjectPaths, assertProjectExists, runProject} from "./ts2lang";
 
-var pkg = require("../package.json");
+var pkg = require("./package.json");
 
 function main(projFile: string) {
     let {filePath, fileDir} = getProjectPaths(projFile);

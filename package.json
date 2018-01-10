@@ -2,15 +2,17 @@
   "name": "ts2lang",
   "version": "1.0.5-1",
   "description": "TypeScript to (language) bindings generator",
-  "main": "bin/ts2lang.js",
+  "main": "ts2lang.js",
   "bin": {
-    "ts2lang": "bin/ts2lang-main.js"
+    "ts2lang": "ts2lang-main.js"
   },
   "scripts": {
-    "test": "tsc -p src && node bin/ts2lang-main --file test/ts2lang.json",
-    "go": "tsc -p src && node bin/ts2lang-main"
+    "build": "tsc -p src",
+    "test": "npm run build && node dist/ts2lang-main --file test/ts2lang.json",
+    "go": "npm run build && node dist/ts2lang-main",
+    "pack": "npm run build && copy package.json dist && copy src\\ts-types.ts dist && copy src\\ts-units.ts dist && cd dist && npm pack && cd .."
   },
-  "author": "Sérgio Silva",
+  "author": "OutSystems",
   "license": "ISC",
   "repository": "OutSystems/ts2lang",
   "preferGlobal": true,
@@ -18,7 +20,7 @@
     "commander": "^2.9.0",
     "is-directory": "^0.3.1",
     "merge": "^1.2.0",
-    "typescript": "^2.1.4"
+    "typescript": "2.6.2"
   },
   "devDependencies": {
     "@types/commander": "^2.3.31",

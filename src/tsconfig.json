@@ -15,6 +15,6 @@
         "preserveConstEnums": true,
         "suppressImplicitAnyIndexErrors": true,
         "sourceMap": true,
-        "outDir": "../bin"
+        "outDir": "../dist"
     }
 }

@@ -7,16 +7,16 @@ export interface ITsAnnotationArgument {
 
 export interface ITsAnnotation {
     name: string;
-    args: ITsAnnotationArgument[]; 
+    args: ITsAnnotationArgument[];
 }
 
 export interface ITsUnit {
     annotations: ITsAnnotation[];
-    
-    addAnnotation(annot: ITsAnnotation);
+
+    addAnnotation(annot: ITsAnnotation): void;
 }
 
-// This should not appear
+// this should not appear
 // @ts2lang this should appear
 export interface ITopLevelTsUnit extends ITsUnit {
     name: string;
@@ -25,23 +25,23 @@ export interface ITopLevelTsUnit extends ITsUnit {
     classes: TsClass[];
     modules: TsModule[];
     enums: TsEnum[];
-    
-    addModule(unit: TsModule);
-    addFunction(unit: TsFunction);
-    addClass(unit: TsClass);
-    addInterface(unit: TsInterface);
-    addEnum(unit: TsEnum);
+
+    addModule(unit: TsModule): void;
+    addFunction(unit: TsFunction): void;
+    addClass(unit: TsClass): void;
+    addInterface(unit: TsInterface): void;
+    addEnum(unit: TsEnum): void;
 }
 
 export abstract class AbstractTsUnit implements ITsUnit {
     name: string;
     annotations: ITsAnnotation[] = [];
-    
+
     constructor(name: string) {
         this.name = name;
     }
-    
-    addAnnotation(annot: ITsAnnotation) {
+
+    addAnnotation(annot: ITsAnnotation): void {
         let args = "";
         annot.args.forEach(arg => {
             if(args) {
@@ -59,23 +59,28 @@ export abstract class TopLevelTsUnit extends AbstractTsUnit implements ITopLevel
     classes: TsClass[] = [];
     modules: TsModule[] = [];
     enums: TsEnum[] = [];
-    
+
     constructor(name: string) {
         super(name);
     }
-    addFunction(unit: TsFunction) {
+
+    addFunction(unit: TsFunction): void {
         this.functions.push(unit);
     }
-    addInterface(unit: TsInterface) {
+
+    addInterface(unit: TsInterface): void {
         this.interfaces.push(unit);
     }
-    addClass(unit: TsClass) {
+
+    addClass(unit: TsClass): void {
         this.classes.push(unit);
     }
-    addModule(unit: TsModule) {
+
+    addModule(unit: TsModule): void {
         this.modules.push(unit);
     }
-    addEnum(unit: TsEnum) {
+
+    addEnum(unit: TsEnum): void {
         this.enums.push(unit);
     }
 }
@@ -125,6 +130,12 @@ export class TsEnumOption {
 
 export class TsInterface extends TopLevelTsUnit {
     $interface: void; // block type compatibility with other top level unit types
+
+    properties: TsProperty[] = [];
+
+    addProperty(unit: TsProperty): void {
+        this.properties.push(unit);
+    }
 }
 
 export class TsModule extends TopLevelTsUnit {
@@ -133,5 +144,19 @@ export class TsModule extends TopLevelTsUnit {
 
 export class TsClass extends TopLevelTsUnit {
     $class: void; // block type compatibility with other top level unit types
+    properties: TsProperty[] = [];
+
+    addProperty(unit: TsProperty): void {
+        this.properties.push(unit);
+    }
 }
 
+export class TsProperty {
+    name: string;
+    type: ITsType;
+
+    constructor(name: string, type: ITsType) {
+        this.name = name;
+        this.type = type;
+    }
+}

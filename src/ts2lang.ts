@@ -73,6 +73,11 @@ export function runProject(filePath: string, fileDir: string) {
         sources.forEach(source => {
             let file = sourceFiles.filter(file => isSamePath(file.fileName, source))[0];
             
+            if (!file) {
+                console.error(`Couldn't file source file ${source}.`);
+                throw new Error("Source file not found.");
+            }
+
             let taskParameters = getTaskParameters(task);
             
             let context =
