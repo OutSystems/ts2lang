@@ -1,9 +1,9 @@
 {
     "tasks": [
         {
-            "input": "source-feed.ts",
+            "input": "*.ts",
             "output": "-",
-            "template": "../bin/template-runner.js",
+            "template": "../dist/template-runner.js",
             "parameters": {
                 "extraInfo1": "extraValue1"
             }

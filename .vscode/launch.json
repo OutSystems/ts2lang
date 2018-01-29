@@ -5,7 +5,7 @@
             "name": "Launch",
             "type": "node",
             "request": "launch",
-            "program": "${workspaceRoot}/bin/ts2lang-main.js",
+            "program": "${workspaceRoot}/dist/ts2lang-main",
             "stopOnEntry": true,
             "args": ["--file", "test/ts2lang.json"],
             "cwd": "${workspaceRoot}",

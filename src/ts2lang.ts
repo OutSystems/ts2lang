@@ -9,6 +9,7 @@ import { resolve as pathCombine, dirname, normalize } from "path";
 import * as merge from 'merge';
 import { writeFileSync, existsSync } from 'fs';
 import { sync as isDirectory } from 'is-directory';
+import * as glob from "glob";
 
 export function getProjectPaths(requestedPath: string) {
     const DEFAULT_PROJ_FILENAME = "./ts2lang.json";
@@ -45,18 +46,17 @@ export function runProject(filePath: string, fileDir: string) {
     let configuration = readConfiguration(filePath);
 
     let compilerHost = ts.createCompilerHost(compilerOptions, /*setParentNodes */ true);
-    
+
     configuration.tasks.forEach(task => {
         let sources: string[] = [];
         let input = task.input;
         
         if (typeof input === "string") {
-            sources.push(input);
+            let inputPath = pathCombine(fileDir, input); 
+            sources = glob.sync(inputPath);
         } else {
-            sources.concat(input);
+            sources = input.map(path => pathCombine(fileDir, path));
         }
-
-        sources = sources.map(path => pathCombine(fileDir, path));
     
         let program = ts.createProgram(sources, compilerOptions, compilerHost);
 
