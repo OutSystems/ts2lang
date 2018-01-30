@@ -7,7 +7,7 @@
             "request": "launch",
             "program": "${workspaceRoot}/dist/ts2lang-main",
             "stopOnEntry": true,
-            "args": ["--file", "test/ts2lang.json"],
+            "args": ["--file", "C:/svn/trunk/Plugins/ScreenTemplates/ServiceStudio.Plugins.ScreenTemplates/ts2lang.json"],
             "cwd": "${workspaceRoot}",
             "preLaunchTask": null,
             "runtimeExecutable": null,

@@ -4,11 +4,10 @@ import * as ts from "typescript";
 import * as analyser from "./ts-analyser";
 import * as Templates from "./template-runner";
 import { read as readConfiguration, getTaskParameters } from "./configuration";
-import { inspect } from "util";
 import { resolve as pathCombine, dirname, normalize } from "path";
-import * as merge from 'merge';
-import { writeFileSync, existsSync } from 'fs';
-import { sync as isDirectory } from 'is-directory';
+import * as merge from "merge";
+import { writeFileSync, existsSync } from "fs";
+import { sync as isDirectory } from "is-directory";
 import * as glob from "glob";
 
 export function getProjectPaths(requestedPath: string) {
@@ -72,26 +71,34 @@ export function runProject(filePath: string, fileDir: string) {
 
         sources.forEach(source => {
             let file = sourceFiles.filter(file => isSamePath(file.fileName, source))[0];
-            
+
             if (!file) {
                 console.error(`Couldn't file source file ${source}.`);
                 throw new Error("Source file not found.");
             }
 
             let taskParameters = getTaskParameters(task);
-            
-            let context =
+
+            let context: any =
                 merge({
-                    $path: file.fileName,
+                    $fullpath: file.fileName,
+                    $path: task.input,
                     $output: task.output,
                     $template: task.template,
                 }, taskParameters);
-                
-            let transformed = Templates.loadTemplate(pathCombine(fileDir, task.template))
-                    .transform(analyser.collectInformation(program, file, file.fileName), context); 
-            
-            output(transformed, fileDir, task.output);
-            
+
+            try {
+                let transformed = Templates
+                    .loadTemplate(pathCombine(fileDir, task.template))
+                    .transform(analyser.collectInformation(program, file, file.fileName), context);
+
+                if (transformed) {
+                    output(transformed, fileDir, context.$output);
+                }
+            } catch (e) {
+                console.error(`Error transforming source file ${source}: ${(e as Error).stack}`);
+                throw new Error("Error transforming source file.");
+            }
         });
     
     });
