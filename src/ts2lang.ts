@@ -33,7 +33,7 @@ export function assertProjectExists(filePath: string) {
     }
 }
 
-export function runProject(filePath: string, fileDir: string) {
+export function runProject(filePath: string, fileDir: string, defaultTemplate: string) {
     const compilerOptions: ts.CompilerOptions = {
         noEmitOnError: true,
         noImplicitAny: true,
@@ -78,18 +78,19 @@ export function runProject(filePath: string, fileDir: string) {
             }
 
             let taskParameters = getTaskParameters(task);
+            let template = task.template || defaultTemplate;
 
             let context: any =
                 merge({
                     $fullpath: file.fileName,
                     $path: task.input,
                     $output: task.output,
-                    $template: task.template,
+                    $template: template,
                 }, taskParameters);
 
             try {
                 let transformed = Templates
-                    .loadTemplate(pathCombine(fileDir, task.template))
+                    .loadTemplate(pathCombine(fileDir, template))
                     .transform(analyser.collectInformation(program, file, file.fileName), context);
 
                 if (transformed) {

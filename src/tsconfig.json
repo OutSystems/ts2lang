@@ -7,14 +7,15 @@
         "jsx": "react",
         "experimentalDecorators": true,
         "emitDecoratorMetadata": true,
-        "declaration": false,
+        "declaration": true,
         "noImplicitAny": false,
         "removeComments": true,
         "noImplicitReturns": true,
         "noLib": false,
         "preserveConstEnums": true,
         "suppressImplicitAnyIndexErrors": true,
-        "sourceMap": true,
-        "outDir": "../dist"
+        "sourceMap": false,
+        "outDir": "../dist",
+        "declarationDir": "../dist"
     }
 }
