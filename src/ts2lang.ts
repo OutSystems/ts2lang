@@ -4,9 +4,9 @@ import * as ts from "typescript";
 import * as analyser from "./ts-analyser";
 import * as Templates from "./template-runner";
 import { read as readConfiguration, getTaskParameters } from "./configuration";
-import { resolve as pathCombine, dirname, normalize } from "path";
+import { resolve as pathCombine, dirname, normalize, sep as pathSeparator } from "path";
 import * as merge from "merge";
-import { writeFileSync, existsSync } from "fs";
+import { writeFileSync, existsSync, mkdirSync } from "fs";
 import { sync as isDirectory } from "is-directory";
 import * as glob from "glob";
 
@@ -112,8 +112,21 @@ function output(content: string, targetDir: string, target: string) {
     if (!target || target === "-") {
         process.stdout.write(content);
     } else {
-        writeFileSync(pathCombine(targetDir, target), content);
+        let outputPath = pathCombine(targetDir, target);
+        ensureDirectoryExists(dirname(outputPath));
+        writeFileSync(outputPath, content);
     }
+}
+
+function ensureDirectoryExists(path: string) {
+    path = path.replace(/\\/g, pathSeparator);
+    path.split(pathSeparator).reduce((prev, curr) => {
+        let aggregatedPath = prev + pathSeparator + curr;
+        if(existsSync(aggregatedPath) === false) {
+            mkdirSync(aggregatedPath);
+        }
+        return aggregatedPath;
+	});
 }
 
 /**
