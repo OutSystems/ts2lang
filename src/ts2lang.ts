@@ -89,9 +89,10 @@ export function runProject(filePath: string, fileDir: string, defaultTemplate: s
                 }, taskParameters);
 
             try {
+                let moduleInfo = analyser.collectInformation(program, file, file.fileName);
                 let transformed = Templates
                     .loadTemplate(pathCombine(fileDir, template))
-                    .transform(analyser.collectInformation(program, file, file.fileName), context);
+                    .transform(moduleInfo, context);
 
                 if (transformed) {
                     output(transformed, fileDir, context.$output);

@@ -59,9 +59,11 @@ export abstract class TopLevelTsUnit extends AbstractTsUnit implements ITopLevel
     classes: TsClass[] = [];
     modules: TsModule[] = [];
     enums: TsEnum[] = [];
+    isPublic: boolean;
 
-    constructor(name: string) {
+    constructor(name: string, isPublic = false) {
         super(name);
+        this.isPublic = isPublic;
     }
 
     addFunction(unit: TsFunction): void {
@@ -110,11 +112,13 @@ export class TsFunction extends AbstractTsUnit {
 export class TsEnum extends AbstractTsUnit {
     name: string;
     options: TsEnumOption[];
+    isPublic: boolean;
 
-    constructor(name: string, options: TsEnumOption[]) {
+    constructor(name: string, options: TsEnumOption[], isPublic = false) {
         super(name);
         this.name = name;
         this.options = options;
+        this.isPublic = isPublic;
     }
 }
 

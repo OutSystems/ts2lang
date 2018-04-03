@@ -1,6 +1,6 @@
 {
   "name": "@outsystems/ts2lang",
-  "version": "1.0.10",
+  "version": "1.0.11",
   "description": "TypeScript to (language) bindings generator",
   "main": "ts2lang.js",
   "bin": {

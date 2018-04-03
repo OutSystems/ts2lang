@@ -9,9 +9,10 @@ function getCommentsOf(node: ts.Node, sourceText: string) {
 let modules: units.TsModule[] = [];
 
 function visitNode(node: ts.Node, sourceText: string, parentUnit: units.ITopLevelTsUnit) {
-    let shouldContinue = true;
     let currentUnit: units.ITsUnit;
-    
+    let modifiers = node.modifiers ? node.modifiers.map(m => m.kind) : [];
+    let isPublic = modifiers.indexOf(ts.SyntaxKind.ExportKeyword) >= 0 || modifiers.indexOf(ts.SyntaxKind.PublicKeyword) >= 0;
+
     switch (node.kind) {
         case ts.SyntaxKind.SourceFile:
             let sourceFile = <ts.SourceFile> node;
@@ -37,7 +38,7 @@ function visitNode(node: ts.Node, sourceText: string, parentUnit: units.ITopLeve
 
         case ts.SyntaxKind.ClassDeclaration:
             let classDeclaration = <ts.ClassDeclaration> node;
-            let classDef = new units.TsClass(classDeclaration.name.text);
+            let classDef = new units.TsClass(classDeclaration.name.text, isPublic);
 
             parentUnit.addClass(classDef);
             walkChildren(node, sourceText, classDef);
@@ -46,7 +47,7 @@ function visitNode(node: ts.Node, sourceText: string, parentUnit: units.ITopLeve
 
         case ts.SyntaxKind.InterfaceDeclaration:
             let interfaceDeclaration = <ts.InterfaceDeclaration> node;
-            let interfaceDefinition = new units.TsInterface(interfaceDeclaration.name.text);
+            let interfaceDefinition = new units.TsInterface(interfaceDeclaration.name.text, isPublic);
             parentUnit.addInterface(interfaceDefinition);
             walkChildren(node, sourceText, interfaceDefinition);
             currentUnit = interfaceDefinition;
@@ -59,7 +60,7 @@ function visitNode(node: ts.Node, sourceText: string, parentUnit: units.ITopLeve
                 var optionValue = m.initializer ? parseInt(m.initializer.getText()) : undefined;
                 return new units.TsEnumOption(optionName, optionValue);
             });
-            let enumDef = new units.TsEnum(enumDeclaration.name.getText(), options);
+            let enumDef = new units.TsEnum(enumDeclaration.name.getText(), options, isPublic);
             parentUnit.addEnum(enumDef);
             currentUnit = enumDef;
             break;

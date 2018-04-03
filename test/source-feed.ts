@@ -1,12 +1,17 @@
-interface IPoint {
-    distanceFromOrigin(): Promise<number[]>;
+import { IBasePoint } from "./source-dependency";
+
+export interface IPoint extends IBasePoint {
+    distanceFromOrigin(): number;
     distance(other: Point): number;
 }
 
-class Point {
+class Point implements IPoint {
     x: number;
     y: number;
     
+    getX(): number { return this.x; }
+    getY(): number { return this.y; }
+
     /*@ts2lang convertToType(X=a | a=b)*/
     public distance(other: Point): number {
         return Math.sqrt((this.x - other.x) ** 2 + (this.y - other.y) ** 2);
