@@ -14,7 +14,7 @@
         "noLib": false,
         "preserveConstEnums": true,
         "suppressImplicitAnyIndexErrors": true,
-        "sourceMap": true,
+        "sourceMap": false,
         "outDir": "../dist",
         "declarationDir": "../dist"
     }

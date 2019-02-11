@@ -86,6 +86,7 @@ export function runProject(filePath: string, fileDir: string, defaultTemplate: s
                     $path: task.input,
                     $output: task.output,
                     $template: template,
+                    $baseDir: fileDir
                 }, taskParameters);
 
             try {

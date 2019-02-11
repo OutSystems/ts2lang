@@ -1,6 +1,6 @@
 {
   "name": "@outsystems/ts2lang",
-  "version": "1.0.11",
+  "version": "1.0.12",
   "description": "TypeScript to (language) bindings generator",
   "main": "ts2lang.js",
   "bin": {
@@ -10,7 +10,7 @@
     "build": "tsc -p src",
     "test": "npm run build && node dist/ts2lang-main --file test/ts2lang.json",
     "go": "npm run build && node dist/ts2lang-main",
-    "pack": "npm run build && copy package.json dist && cd dist && npm pack && cd .."
+    "pack": "npm run build && copy package.json dist && cd dist && del /Q *.tgz && npm pack && cd .."
   },
   "author": "OutSystems",
   "license": "ISC",
