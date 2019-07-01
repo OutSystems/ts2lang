@@ -6,6 +6,7 @@ export interface IPoint extends IBasePoint {
 }
 
 class Point implements IPoint {
+    readonly name: string;
     x: number;
     y: number;
     

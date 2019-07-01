@@ -85,7 +85,8 @@ function visitNode(node: ts.Node, sourceText: string, parentUnit: units.ITopLeve
             let propertyDeclaration = <ts.PropertySignature | ts.PropertyDeclaration> node;
             
             if (parentUnit instanceof units.TsInterface || parentUnit instanceof units.TsClass) {
-                let propertyDef = new units.TsProperty(propertyDeclaration.name.getText(), typeNodeToTsType(propertyDeclaration.type));
+                let isReadOnly = propertyDeclaration.modifiers && propertyDeclaration.modifiers.some(m => m.kind === ts.SyntaxKind.ReadonlyKeyword);
+                let propertyDef = new units.TsProperty(propertyDeclaration.name.getText(), typeNodeToTsType(propertyDeclaration.type), isReadOnly);
                 parentUnit.addProperty(propertyDef);
             }
             break;

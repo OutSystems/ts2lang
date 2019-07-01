@@ -158,9 +158,11 @@ export class TsClass extends TopLevelTsUnit {
 export class TsProperty {
     name: string;
     type: ITsType;
+    isReadOnly: boolean;
 
-    constructor(name: string, type: ITsType) {
+    constructor(name: string, type: ITsType, isReadOnly: boolean) {
         this.name = name;
         this.type = type;
+        this.isReadOnly = isReadOnly;
     }
 }
