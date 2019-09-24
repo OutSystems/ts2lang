@@ -37,8 +37,17 @@ var tests = Task("Tests")
         Information("Ending Tests");
 	});
 
-
+var package = Task("Package")
+    .Does(()=>
+    {
+        Information("Starting Pack");
+        CreateDirectory("./artifacts");
+        MoveFileToDirectory(@"./package.json", @"./artifacts/");
+        NpmPack(settings => settings.FromPath("./artifacts")); 
+        MoveFileToDirectory(@"./artifacts/package.json", @""); 
+        Information("Ending Pack");
+    });
 Task("Default")
-    .IsDependentOn("Install");
+    .IsDependentOn("Package");
 
 RunTarget(target);
