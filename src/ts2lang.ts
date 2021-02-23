@@ -3,7 +3,7 @@
 import * as ts from "typescript";
 import * as analyser from "./ts-analyser";
 import * as Templates from "./template-runner";
-import { read as readConfiguration, getTaskParameters } from "./configuration";
+import { read as readConfiguration, getTaskParameters, IConfigurationTask } from "./configuration";
 import { resolve as pathCombine, dirname, normalize, sep as pathSeparator } from "path";
 import * as merge from "merge";
 import { writeFileSync, existsSync, mkdirSync } from "fs";
@@ -33,6 +33,15 @@ export function assertProjectExists(filePath: string) {
     }
 }
 
+export function listInputFiles(filePath: string, fileDir: string) {
+    const configuration = readConfiguration(filePath);
+
+    configuration.tasks.forEach(task => {
+        const sources: string[] = getSourceFiles(task, fileDir);
+        sources.map(source => console.log(source));
+    }); 
+}
+
 export function runProject(filePath: string, fileDir: string, defaultTemplate: string) {
     const compilerOptions: ts.CompilerOptions = {
         noEmitOnError: true,
@@ -43,24 +52,15 @@ export function runProject(filePath: string, fileDir: string, defaultTemplate: s
     };
 
     let configuration = readConfiguration(filePath);
-
     let compilerHost = ts.createCompilerHost(compilerOptions, /*setParentNodes */ true);
 
     configuration.tasks.forEach(task => {
-        let sources: string[] = [];
-        let input = task.input;
-        
-        if (typeof input === "string") {
-            let inputPath = pathCombine(fileDir, input); 
-            sources = glob.sync(inputPath);
-        } else {
-            sources = input.map(path => pathCombine(fileDir, path));
-        }
+        let sources: string[] = getSourceFiles(task, fileDir);
+        console.log(sources);
     
         let program = ts.createProgram(sources, compilerOptions, compilerHost);
 
         let sourceFiles = program.getSourceFiles();
-
         // console.log(
         //     inspect(sourceFiles.map(sourceFile => {
         //         let moduleName = sourceFile.fileName;
@@ -105,6 +105,20 @@ export function runProject(filePath: string, fileDir: string, defaultTemplate: s
         });
     
     });
+}
+
+function getSourceFiles(task: IConfigurationTask, fileDir: string) {
+    let sources: string[] = [];
+    let input = task.input;
+
+    if (typeof input === "string") {
+        let inputPath = pathCombine(fileDir, input);
+        sources = glob.sync(inputPath);
+    } else {
+        sources = input.map(path => pathCombine(fileDir, path));
+    }
+
+    return sources;
 }
 
 /**
