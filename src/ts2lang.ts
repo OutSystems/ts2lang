@@ -56,11 +56,9 @@ export function runProject(filePath: string, fileDir: string, defaultTemplate: s
 
     configuration.tasks.forEach(task => {
         let sources: string[] = getSourceFiles(task, fileDir);
-        console.log(sources);
-    
         let program = ts.createProgram(sources, compilerOptions, compilerHost);
-
         let sourceFiles = program.getSourceFiles();
+        
         // console.log(
         //     inspect(sourceFiles.map(sourceFile => {
         //         let moduleName = sourceFile.fileName;
