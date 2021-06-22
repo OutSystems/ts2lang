@@ -1,11 +1,8 @@
-/// <reference path="merge.d.ts" />
-
 import * as ts from "typescript";
 import * as analyser from "./ts-analyser";
 import * as Templates from "./template-runner";
 import { read as readConfiguration, getTaskParameters, IConfigurationTask } from "./configuration";
 import { resolve as pathCombine, dirname, normalize, sep as pathSeparator } from "path";
-import * as merge from "merge";
 import { writeFileSync, existsSync, mkdirSync } from "fs";
 import { sync as isDirectory } from "is-directory";
 import * as glob from "glob";
@@ -78,14 +75,14 @@ export function runProject(filePath: string, fileDir: string, defaultTemplate: s
             let taskParameters = getTaskParameters(task);
             let template = task.template || defaultTemplate;
 
-            let context: any =
-                merge({
-                    $fullpath: file.fileName,
-                    $path: task.input,
-                    $output: task.output,
-                    $template: template,
-                    $baseDir: fileDir
-                }, taskParameters);
+            let context: any = {
+                ...taskParameters,
+                $fullpath: file.fileName,
+                $path: task.input,
+                $output: task.output,
+                $template: template,
+                $baseDir: fileDir
+            };
 
             try {
                 let moduleInfo = analyser.collectInformation(program, file, file.fileName);

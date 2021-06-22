@@ -8,7 +8,19 @@ function getCommentsOf(node: ts.Node, sourceText: string) {
 
 let modules: units.TsModule[] = [];
 
-function visitNode(node: ts.Node, sourceText: string, parentUnit: units.ITopLevelTsUnit) {
+/**
+ * Given a TS Node, get the jsDoc comments associated with it.
+ * If multiple docs are found, they're concatenated in a single string. */
+function getDocumentationOf(node: ts.Node, typeChecker: ts.TypeChecker): string {
+    const namedNode = node as ts.NamedDeclaration;
+    if (!namedNode.name) {
+        return "";
+    }
+    const symbol = typeChecker.getSymbolAtLocation(namedNode.name);
+    return symbol.getDocumentationComment(typeChecker).map(doc => doc.text).join("\n");
+}
+
+function visitNode(node: ts.Node, sourceText: string, parentUnit: units.ITopLevelTsUnit, typeChecker: ts.TypeChecker) {
     let currentUnit: units.ITsUnit;
     let modifiers = node.modifiers ? node.modifiers.map(m => m.kind) : [];
     let isPublic = modifiers.indexOf(ts.SyntaxKind.ExportKeyword) >= 0 || modifiers.indexOf(ts.SyntaxKind.PublicKeyword) >= 0;
@@ -18,7 +30,7 @@ function visitNode(node: ts.Node, sourceText: string, parentUnit: units.ITopLeve
             let sourceFile = <ts.SourceFile> node;
 
             if (sourceFile.fileName.indexOf("lib.d.ts") < 0) {
-                walkChildren(node, sourceText, parentUnit);
+                walkChildren(node, sourceText, parentUnit, typeChecker);
             }
             break;
 
@@ -28,28 +40,28 @@ function visitNode(node: ts.Node, sourceText: string, parentUnit: units.ITopLeve
             modules.push(moduleDef);
             parentUnit.addModule(moduleDef);
             
-            walkChildren(node, sourceText, moduleDef);
+            walkChildren(node, sourceText, moduleDef, typeChecker);
             currentUnit = moduleDef;
             break;
 
         case ts.SyntaxKind.ModuleBlock:
-            walkChildren(node, sourceText, parentUnit);
+            walkChildren(node, sourceText, parentUnit, typeChecker);
             break;
 
         case ts.SyntaxKind.ClassDeclaration:
             let classDeclaration = <ts.ClassDeclaration> node;
-            let classDef = new units.TsClass(classDeclaration.name.text, isPublic);
+            let classDef = new units.TsClass(classDeclaration.name.text, isPublic, getDocumentationOf(node, typeChecker));
 
             parentUnit.addClass(classDef);
-            walkChildren(node, sourceText, classDef);
+            walkChildren(node, sourceText, classDef, typeChecker);
             currentUnit = classDef;
             break;
 
         case ts.SyntaxKind.InterfaceDeclaration:
             let interfaceDeclaration = <ts.InterfaceDeclaration> node;
-            let interfaceDefinition = new units.TsInterface(interfaceDeclaration.name.text, isPublic);
+            let interfaceDefinition = new units.TsInterface(interfaceDeclaration.name.text, isPublic, getDocumentationOf(node, typeChecker));
             parentUnit.addInterface(interfaceDefinition);
-            walkChildren(node, sourceText, interfaceDefinition);
+            walkChildren(node, sourceText, interfaceDefinition, typeChecker);
             currentUnit = interfaceDefinition;
             break;
 
@@ -58,9 +70,9 @@ function visitNode(node: ts.Node, sourceText: string, parentUnit: units.ITopLeve
             let options: units.TsEnumOption[] = enumDeclaration.members.map(m => {
                 var optionName = m.name.getText();
                 var optionValue = m.initializer ? parseInt(m.initializer.getText()) : undefined;
-                return new units.TsEnumOption(optionName, optionValue);
+                return new units.TsEnumOption(optionName, optionValue, getDocumentationOf(m, typeChecker));
             });
-            let enumDef = new units.TsEnum(enumDeclaration.name.getText(), options, isPublic);
+            let enumDef = new units.TsEnum(enumDeclaration.name.getText(), options, isPublic, getDocumentationOf(node, typeChecker));
             parentUnit.addEnum(enumDef);
             currentUnit = enumDef;
             break;
@@ -72,9 +84,9 @@ function visitNode(node: ts.Node, sourceText: string, parentUnit: units.ITopLeve
             let functionDeclaration = <ts.SignatureDeclaration> node;
 
             let params = functionDeclaration.parameters.map(p => {
-                return new units.TsParameter(p.name.getText(), typeNodeToTsType(p.type));
+                return new units.TsParameter(p.name.getText(), typeNodeToTsType(p.type), getDocumentationOf(p, typeChecker));
             });
-            let functionDef = new units.TsFunction(functionDeclaration.name.getText(), params, typeNodeToTsType(functionDeclaration.type));
+            let functionDef = new units.TsFunction(functionDeclaration.name.getText(), params, typeNodeToTsType(functionDeclaration.type), getDocumentationOf(node, typeChecker));
             parentUnit.addFunction(functionDef);
             
             currentUnit = functionDef;
@@ -86,7 +98,7 @@ function visitNode(node: ts.Node, sourceText: string, parentUnit: units.ITopLeve
             
             if (parentUnit instanceof units.TsInterface || parentUnit instanceof units.TsClass) {
                 let isReadOnly = propertyDeclaration.modifiers && propertyDeclaration.modifiers.some(m => m.kind === ts.SyntaxKind.ReadonlyKeyword);
-                let propertyDef = new units.TsProperty(propertyDeclaration.name.getText(), typeNodeToTsType(propertyDeclaration.type), isReadOnly);
+                let propertyDef = new units.TsProperty(propertyDeclaration.name.getText(), typeNodeToTsType(propertyDeclaration.type), isReadOnly, getDocumentationOf(node, typeChecker));
                 parentUnit.addProperty(propertyDef);
             }
             break;
@@ -158,9 +170,9 @@ function typeNodeToTsType(tn: ts.TypeNode): types.ITsType {
     return types.TsVoidType;
 }
 
-function walkChildren(node: ts.Node, sourceText: string, parentUnit: units.ITopLevelTsUnit) {
+function walkChildren(node: ts.Node, sourceText: string, parentUnit: units.ITopLevelTsUnit, typeChecker: ts.TypeChecker) {
     ts.forEachChild(node, (child) => {
-        visitNode(child, sourceText, parentUnit);
+        visitNode(child, sourceText, parentUnit, typeChecker);
     });
 }
 
@@ -168,6 +180,6 @@ function walkChildren(node: ts.Node, sourceText: string, parentUnit: units.ITopL
 export function collectInformation(program: ts.Program, sourceFile: ts.SourceFile, rootModuleName: string) {
     let scanner = ts.createScanner(ts.ScriptTarget.Latest, false, ts.LanguageVariant.Standard, sourceFile.text);
     let moduleDef = new units.TsModule(rootModuleName);
-    visitNode(sourceFile, sourceFile.text, moduleDef);
+    visitNode(sourceFile, sourceFile.text, moduleDef, program.getTypeChecker());
     return moduleDef;
 }
