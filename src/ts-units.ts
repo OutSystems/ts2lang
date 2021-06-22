@@ -10,6 +10,12 @@ export interface ITsAnnotation {
     args: ITsAnnotationArgument[];
 }
 
+/** a code unit that has a name and possibly a jsdoc comment */
+export interface INamedTsUnit {
+    name: string;
+    documentation: string;
+}
+
 export interface ITsUnit {
     annotations: ITsAnnotation[];
 
@@ -36,9 +42,11 @@ export interface ITopLevelTsUnit extends ITsUnit {
 export abstract class AbstractTsUnit implements ITsUnit {
     name: string;
     annotations: ITsAnnotation[] = [];
+    documentation: string;
 
-    constructor(name: string) {
+    constructor(name: string, documentation: string) {
         this.name = name;
+        this.documentation = documentation;
     }
 
     addAnnotation(annot: ITsAnnotation): void {
@@ -61,8 +69,8 @@ export abstract class TopLevelTsUnit extends AbstractTsUnit implements ITopLevel
     enums: TsEnum[] = [];
     isPublic: boolean;
 
-    constructor(name: string, isPublic = false) {
-        super(name);
+    constructor(name: string, isPublic = false, documentation = null) {
+        super(name, documentation);
         this.isPublic = isPublic;
     }
 
@@ -90,10 +98,12 @@ export abstract class TopLevelTsUnit extends AbstractTsUnit implements ITopLevel
 export class TsParameter {
     name: string;
     type: ITsType;
+    documentation: string;
 
-    constructor(name: string, type: ITsType) {
+    constructor(name: string, type: ITsType, documentation: string = null) {
         this.name = name;
         this.type = type;
+        this.documentation = documentation;
     }
 }
 
@@ -102,8 +112,8 @@ export class TsFunction extends AbstractTsUnit {
     parameters: TsParameter[];
     returnType: ITsType;
 
-    constructor(name: string, parameters: TsParameter[], returnType: ITsType) {
-        super(name);
+    constructor(name: string, parameters: TsParameter[], returnType: ITsType, documentation: string = null) {
+        super(name, documentation);
         this.parameters = parameters;
         this.returnType = returnType;
     }
@@ -114,8 +124,8 @@ export class TsEnum extends AbstractTsUnit {
     options: TsEnumOption[];
     isPublic: boolean;
 
-    constructor(name: string, options: TsEnumOption[], isPublic = false) {
-        super(name);
+    constructor(name: string, options: TsEnumOption[], isPublic = false, documentation: string = null) {
+        super(name, documentation);
         this.name = name;
         this.options = options;
         this.isPublic = isPublic;
@@ -125,10 +135,12 @@ export class TsEnum extends AbstractTsUnit {
 export class TsEnumOption {
     name: string;
     id: number;
+    documentation: string;
 
-    constructor(name: string, id: number) {
+    constructor(name: string, id: number, documentation: string) {
         this.name = name;
         this.id = id;
+        this.documentation = documentation;
     }
 }
 
@@ -159,10 +171,12 @@ export class TsProperty {
     name: string;
     type: ITsType;
     isReadOnly: boolean;
+    documentation: string;
 
-    constructor(name: string, type: ITsType, isReadOnly: boolean) {
+    constructor(name: string, type: ITsType, isReadOnly: boolean, documentation: string) {
         this.name = name;
         this.type = type;
         this.isReadOnly = isReadOnly;
+        this.documentation = documentation;
     }
 }

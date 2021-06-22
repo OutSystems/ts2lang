@@ -13,6 +13,13 @@ function getFunctionReturnType(func: Units.TsFunction): string {
 class DummyTemplate {
     
     constructor(private context: Object) {}
+
+    dumpDoc = (u: Units.INamedTsUnit) => {
+        if (u.documentation) {
+            return `DOCS[${JSON.stringify(u.documentation)}]\n`;
+        }
+        return "";
+    }
     
     dumpModule = (module: Units.TsModule) => {
         return module.classes.map(this.dumpClass).join("\n") + "\n" + 
@@ -21,25 +28,28 @@ class DummyTemplate {
     }
     
     dumpClass = (klass: Units.TsClass) => {
-        return `CLASS ${klass.name}${this.context["extraInfo1"]} {\n` +
+        return this.dumpDoc(klass) +
+            `CLASS ${klass.name}${this.context["extraInfo1"]} {\n` +
             klass.functions.map(this.dumpMethod).join("\n") +
             "\n}";
     }
 
     dumpInterface = (interf: Units.TsInterface) => {
-        return `INTERFACE ${interf.name}${this.context["extraInfo1"]} {\n` +
+        return this.dumpDoc(interf) +
+            `INTERFACE ${interf.name}${this.context["extraInfo1"]} {\n` +
             interf.functions.map(this.dumpMethod).join("\n") +
             "\n}";
     }
     
     dumpMethod = (method: Units.TsFunction) => {
-        let parameters = method.parameters.map(p => `${p.name}: ${p.type.name}`).join(", ");
-        return `${getFunctionReturnType(method)} ${method.name}(${parameters})`;
+        let parameters = method.parameters.map(p => `${this.dumpDoc(p)}${p.name}: ${p.type.name}`).join(", ");
+        return this.dumpDoc(method) + `${getFunctionReturnType(method)} ${method.name}(${parameters})`;
     }
 
     dumpEnum = (enumz: Units.TsEnum) => {
-        return `ENUM ${enumz.name} {\n` +
-            enumz.options.map(x => { return x.name + (x.id === undefined? "" : " = " + x.id) }).join(",\n") +
+        return this.dumpDoc(enumz) +
+            `ENUM ${enumz.name} {\n` +
+            enumz.options.map(x => { return this.dumpDoc(x) + x.name + (x.id === undefined? "" : " = " + x.id) }).join(",\n") +
             "\n}";
     }
 }
