@@ -8,7 +8,7 @@
   },
   "scripts": {
     "build": "tsc -p src",
-    "test": "npm run build && node dist/ts2lang-main --file test/ts2lang.json",
+    "test": "npm run build && copy package.json dist && node dist/ts2lang-main --file test/ts2lang.json",
     "go": "npm run build && node dist/ts2lang-main",
     "pack": "npm run build && copy package.json dist && cd dist && del /Q *.tgz && npm pack && copy *.tgz .. && cd .."
   },
@@ -20,7 +20,6 @@
     "commander": "^2.9.0",
     "glob": "^7.1.2",
     "is-directory": "^0.3.1",
-    "merge": "^1.2.0",
     "typescript": "^4.1.3"
   },
   "devDependencies": {
